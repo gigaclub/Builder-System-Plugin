@@ -56,7 +56,7 @@ public class BuildServerCreate implements CommandExecutor {
                 }
             }
         }
-    }
+
 
     private final IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry()
             .getFirstService(IPlayerManager.class);

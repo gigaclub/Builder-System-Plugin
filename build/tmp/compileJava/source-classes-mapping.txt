@@ -1,0 +1,10 @@
+net/gigaclub/buildersystemplugin/Main.java
+ net.gigaclub.buildersystemplugin.Main
+net/gigaclub/buildersystemplugin/Config/OdooConfig.java
+ net.gigaclub.buildersystemplugin.Config.OdooConfig
+net/gigaclub/buildersystemplugin/Config/Config.java
+ net.gigaclub.buildersystemplugin.Config.Config
+net/gigaclub/buildersystemplugin/Commands/TapBSC.java
+ net.gigaclub.buildersystemplugin.Commands.TapBSC
+net/gigaclub/buildersystemplugin/Commands/BuildServerCreate.java
+ net.gigaclub.buildersystemplugin.Commands.BuildServerCreate
