@@ -11,6 +11,7 @@ import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 public class BuildServerCreate implements CommandExecutor {
     private int serviceId;
     private Player player;
+    private int taskID;
+
 
     @EventListener
     public void handleServiceConnected(CloudServiceConnectNetworkEvent event) {
@@ -43,15 +46,20 @@ public class BuildServerCreate implements CommandExecutor {
 
                     List<? extends ICloudPlayer> cloudPlayers = this.playerManager.getOnlinePlayers(this.player.getName());
                     if (!cloudPlayers.isEmpty()) { ICloudPlayer entry = cloudPlayers.get(0);
-                        try {
-                            TimeUnit.SECONDS.sleep(10);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        this.playerManager.getPlayerExecutor(entry).connect(event.getServiceInfo().getServiceId().getTaskName()+"-"+this.serviceId);
+                        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new Runnable() {
+                            int countdown = 10;
+                            public void run() {
+                                if (countdown > 0) {
+                                    System.out.println(countdown);
+                                } else {
 
+                                    this.playerManager.getPlayerExecutor(entry).connect(event.getServiceInfo().getServiceId().getTaskName()+"-"+this.serviceId);
+                                }
+                                countdown--;
+                            }
+                        }, 0, 20);
 
-                        }
+                      }
                     }
                 }
             }
@@ -94,7 +102,7 @@ public class BuildServerCreate implements CommandExecutor {
 
                 }
                 if (args.length == 2) {
-/*                    if (!args[1].equals("Normal") || !args[1].equals("Void") || !args[1].equals("Flat")) {
+/*                    if (!args[1].equals("Normal") || !args[1].equals("Void") || !args[1].equals("Flat")) {     //alternative?
                         this.player.sendMessage(t.t("bsc.Command.WrongWorldtyp", playerUUID));
                         return false;
                     } else
@@ -130,9 +138,7 @@ public class BuildServerCreate implements CommandExecutor {
 
 
         }
-    //}
-
+        //}
         return true;
-
     }
 }
