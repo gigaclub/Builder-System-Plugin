@@ -35,7 +35,7 @@ public class BuildServerCreate implements CommandExecutor {
         ServiceLifeCycle serviceLifeCycle = serviceInfoSnapshot.getLifeCycle();
         ServiceId serviceId = serviceInfoSnapshot.getServiceId();
 
-        if (this.serviceId == event.getServiceInfo().getServiceId().getTaskServiceId()) {
+        if (this.serviceId == serviceId.getTaskServiceId()) {
 
             if (serviceLifeCycle == ServiceLifeCycle.RUNNING) {
 
