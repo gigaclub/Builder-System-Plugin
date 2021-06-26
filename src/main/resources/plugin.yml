@@ -4,6 +4,7 @@ main: net.gigaclub.buildersystemplugin.Main
 api-version: 1.16
 authors: [ Feier68 ]
 description: Builder-System-Plugin
+depend: [ Translation ]
 website: Gigaclub.net
 
 
