@@ -16,10 +16,10 @@ name: Lint Code Base
 #############################
 on:
   push:
-    branches-ignore: ["14.0"]
+    branches-ignore: ["1.17"]
     # Remove the line above to run when pushing to master
   pull_request:
-    branches: ["14.0"]
+    branches: ["1.17"]
 
 ###############
 # Set the Job #
@@ -41,7 +41,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
+          # Full git history is needed to get a proper 
+          # list of changed files within `super-linter`
           fetch-depth: 0
 
       ################################
@@ -51,5 +52,5 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "14.0"
+          DEFAULT_BRANCH: "1.17"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
