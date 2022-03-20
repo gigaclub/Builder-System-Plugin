@@ -1,13 +1,21 @@
 name: Builder_System_Plugin
 version: ${project.version}
 main: net.gigaclub.buildersystemplugin.Main
-api-version: 1.16
-authors: [ Feier68 ]
+api-version: 1.18
+authors: [Feier68]
 description: Builder-System-Plugin
-depend: [ Translation ]
+depend:
+  - Translation
+  - CloudNet-Bridge
 website: Gigaclub.net
 
 
 commands:
   bsc:
     description: /bsc <test>
+  gcteams:
+    description: command zum verwalten von teams
+  gctask:
+    description: command zum verwalten von task
+  gcprojekt:
+    description: command zum verwalten von welten/Projeckte
