@@ -16,10 +16,10 @@ name: Lint Code Base
 #############################
 on:
   push:
-    branches-ignore: ["1.17"]
+    branches-ignore: ["1.18.2"]
     # Remove the line above to run when pushing to master
   pull_request:
-    branches: ["1.17"]
+    branches: ["1.18.2"]
 
 ###############
 # Set the Job #
@@ -52,6 +52,6 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "1.17"
+          DEFAULT_BRANCH: "1.18.2"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_GOOGLE_JAVA_FORMAT: true
