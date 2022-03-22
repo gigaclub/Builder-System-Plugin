@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
 
-public class Tasks implements CommandExecutor, TabCompleter {
+public class    Tasks implements CommandExecutor, TabCompleter {
 
    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -35,35 +35,31 @@ public class Tasks implements CommandExecutor, TabCompleter {
         if (player instanceof Player) {
 
             if (args.length >= 1) {
-
+                if (args.length == 1) {
+                    player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                    return false;
+                }
                 switch (args[0].toLowerCase()) {
 
                     case "create":
                         if (player.hasPermission("builderteam.admin")) {
-                            if (args.length == 1) {
-                                player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
-                                return false;
 
-                            } else if (args.length == 2) {
-                                // nur name
+                                if (args.length == 2) {
+                                    // nur name
                                 builderSystem.createTask(args[1], "false", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
-
+                                player.sendMessage(t.t("builder_team.task.create.task_name_succses", playerUUID));
                             } else if (args.length >= 3) {
-
-                                builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));// später Baugrösse Verplichtend
-
+                                // name + description
+                                builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+                                player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", playerUUID));
                             }
 
                         }
                         break;
                     case "remove":
                         if (player.hasPermission("builderteam.admin")) {
-                            if (args.length == 1) {
-                                player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
-                                return false;
-
-                            } else if (args.length == 2) {
-                                if (isInt(args[1]) == true) {
+                                 if (args.length == 2) {
+                                if (isInt(args[1])) {
 
                                     int i = Integer.parseInt(args[1]);
                                     builderSystem.removeTask(i);

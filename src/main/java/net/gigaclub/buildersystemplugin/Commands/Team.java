@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
+import static org.bukkit.Bukkit.getLogger;
 
 public class Team implements CommandExecutor, TabCompleter {
 
@@ -44,7 +45,10 @@ public class Team implements CommandExecutor, TabCompleter {
 
 
             if (args.length >= 1) {
-
+                if (args.length == 1) {
+                    player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                    return false;
+                }
                 switch (args[0].toLowerCase()) {
 
                     case "create":
@@ -79,6 +83,7 @@ public class Team implements CommandExecutor, TabCompleter {
 
                         }
                         break;
+
                     case "edit":
                         if (args.length == 2) {
                             player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.to_less_arguments", playerUUID));
@@ -127,10 +132,7 @@ public class Team implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "kick":
-                        if (args.length == 1) {
-                            player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.to_less_arguments", playerUUID));
-                            return false;
-                        } else if (args.length == 2) {
+                            if (args.length == 2) {
                             String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
                             int status2 = builderSystem.kickMember(playerUUID, p);
                             switch (status2) {
@@ -236,7 +238,8 @@ public class Team implements CommandExecutor, TabCompleter {
 
 
         } else
-            System.out.println(ChatColor.RED.toString() + "You´r not a Player  XD");
+            getLogger().info("You´r not a Player  XD");
+
         return false;
     }
 
@@ -278,7 +281,7 @@ public class Team implements CommandExecutor, TabCompleter {
         } else
             switch (args[0].toLowerCase()) {
                 case "create":
-                    if (args.length == 2) {
+                        if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
                         createname.add("<" + t.t("builder_team.create.tab_teamname", playerUUID) + ">");
                         return createname;
@@ -291,7 +294,7 @@ public class Team implements CommandExecutor, TabCompleter {
 
 
                 case "edit":
-                    if (args.length == 2) {
+                     if (args.length == 2) {
                         List<String> arguments = new ArrayList<>();
                         arguments.add("Name");
                         arguments.add("Description");
@@ -326,7 +329,10 @@ public class Team implements CommandExecutor, TabCompleter {
 
 
                 case "leave":
-                    if (args.length == 2) {
+                    if (args.length == 1) {
+                        player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                        return null;
+                    } else if (args.length == 2) {
                         return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).get("name"));
                     }
                     break;

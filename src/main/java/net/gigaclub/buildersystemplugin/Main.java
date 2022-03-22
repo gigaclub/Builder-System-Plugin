@@ -122,7 +122,7 @@ public final class Main extends JavaPlugin {
 
     public static void registerTranslations() {
         Main.translation.registerTranslations(Arrays.asList(
-                "builder_team.ToLessArguments",
+                "builder_team.to_less_arguments",
                 "builder_team.wrong_arguments",
                 "BuilderSystem.toomany_Arguments",
 
@@ -148,6 +148,8 @@ public final class Main extends JavaPlugin {
                 "builder_team.task.create.tab_task_name",
                 "builder_team.task.create.tab_task_x_size",
                 "builder_team.task.create.tab_task_y_size",
+                "builder_team.task.create.task_name_succses",
+                "builder_team.task.create.task_name_desc_succses",
                 "builder_team.task_id",
 
                 "builder_team.tab_task_id",
