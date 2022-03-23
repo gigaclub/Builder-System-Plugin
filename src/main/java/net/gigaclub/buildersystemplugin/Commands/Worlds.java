@@ -13,10 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -37,21 +34,10 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                 case "createasteam":
                     String ownteamname = builderSystem.getTeamNameByMember(playerUUID).get("name");
-                    if (ownteamname == "false") {
-                        getLogger().info("no team 1");
-                        return false;
-                    }
-                    if (ownteamname == "") {
-                        getLogger().info("no team 2");
-                        return false;
-                    }
-                    if (ownteamname == null) {
-                        getLogger().info("no team 3");
-                        return false;
-                    }
+
                     getLogger().info("teamname: " + ownteamname);
                     if (args.length == 2) {
-                        //
+
                         for (Object o : builderSystem.getAllTasks()) {
                             HashMap m = (HashMap) o;
                             Integer Taskid = (Integer) m.get("id");
@@ -59,7 +45,6 @@ public class Worlds implements CommandExecutor, TabCompleter {
                                 Object TaskObject = builderSystem.getTask(Taskid);
                                 HashMap Task = (HashMap) TaskObject;
                                 String TaskName = (String) Task.get("name");
-                                getLogger().info("Taskname: " + TaskName);
                                 builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), TaskName, "default");
                                 player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
                             }
@@ -71,9 +56,6 @@ public class Worlds implements CommandExecutor, TabCompleter {
                             boolean defaultworldtyp = (boolean) m.get("default");
 
                             if (defaultworldtyp == true) {
-                                System.out.println(Integer.parseInt(args[1]));
-                                System.out.println(args[2]);
-                                System.out.println(worldTyp);
                                 if (isInt(args[1])) {
                                     builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), args[2], worldTyp);
                                     player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
@@ -146,13 +128,28 @@ public class Worlds implements CommandExecutor, TabCompleter {
                         return false;
                     }
                     break;
-                case "remove":
+                case "removeteam":
+                    // add function to remove other team
                     String ownteamname3 = builderSystem.getTeamNameByMember(playerUUID).get("name");
-                    System.out.println("GetTeam ? " + builderSystem.getTeam(args[1]));
-                    if (!(ownteamname3.equalsIgnoreCase(args[1]))) {
-                        String Teamname = (String) builderSystem.getTeam(args[1].toLowerCase());
+                    if (args.length == 2) {
+                        
+                    }
+                    if (ownteamname3 != null) {
+                        if (!(ownteamname3.equalsIgnoreCase(args[1]))) {
+                            String Teamname = (String) builderSystem.getTeam(args[1].toLowerCase());
+                            if (isInt(args[2])) {
+                                builderSystem.removeTeamFromWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
+                                player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.remove_succses", playerUUID));
+                            }
+                        }
+                    }
+                    break;
+                case "removeuser":
+
+
+                    if (args[3].toLowerCase(Locale.ROOT) == Bukkit.getOfflinePlayer(args[1]).getName().toLowerCase(Locale.ROOT)) {
                         if (isInt(args[2])) {
-                            builderSystem.removeTeamFromWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
+                            builderSystem.removeUserFromWorld(playerUUID,args[3], Integer.parseInt(args[2]));
                             player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.remove_succses", playerUUID));
                         }
                     }
