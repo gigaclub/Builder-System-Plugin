@@ -160,6 +160,11 @@ public final class Main extends JavaPlugin {
                 "BuilderSystem.world.world_typ_list",
                 "BuilderSystem.world.team_list",
                 "BuilderSystem.world.user_list",
+                "BuilderSystem.world.create_team_succses",
+                "BuilderSystem.world.create_user_succses",
+                "BuilderSystem.world.remove_succses",
+                "BuilderSystem.world.addteam_succses",
+                "BuilderSystem.world.adduser_succses",
 
                 "BuilderSystem.countdown_begin"
 //      status msg´s

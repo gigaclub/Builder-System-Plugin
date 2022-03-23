@@ -35,13 +35,14 @@ public class    Tasks implements CommandExecutor, TabCompleter {
         if (player instanceof Player) {
 
             if (args.length >= 1) {
-                if (args.length == 1) {
-                    player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
-                    return false;
-                }
+
                 switch (args[0].toLowerCase()) {
 
                     case "create":
+                        if (args.length == 1) {
+                            player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                            return false;
+                        }
                         if (player.hasPermission("builderteam.admin")) {
 
                                 if (args.length == 2) {
@@ -57,6 +58,10 @@ public class    Tasks implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "remove":
+                        if (args.length == 1) {
+                            player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                            return false;
+                        }
                         if (player.hasPermission("builderteam.admin")) {
                                  if (args.length == 2) {
                                 if (isInt(args[1])) {
