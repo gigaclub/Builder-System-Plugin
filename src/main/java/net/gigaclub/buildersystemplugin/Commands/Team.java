@@ -16,6 +16,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -108,7 +110,7 @@ public class Team implements CommandExecutor, TabCompleter {
                                     }
                                 }
                                 case "description" -> {
-                                    String team = (String) builderSystem.getTeam(args[2]);
+                                    String team = builderSystem.getTeam(args[2]).getString("name");
                                     int status = builderSystem.editTeam(playerUUID, args[2], team, getDescription(args, 2));
                                     switch (status) {
                                         case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.edit.description", playerUUID));
@@ -307,7 +309,7 @@ public class Team implements CommandExecutor, TabCompleter {
                             case "name":
                                 if (args.length == 3) {
 
-                                    return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).get("name"));
+                                    return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).getString("name"));
                                 } else if (args.length == 4) {
                                     List<String> createnewname = new ArrayList<>();
                                     createnewname.add("<" + t.t("builder_team.edit.tab_teamname", playerUUID) + ">");
@@ -316,7 +318,7 @@ public class Team implements CommandExecutor, TabCompleter {
                                 break;
                             case "description":
                                 if (args.length == 3) {
-                                    return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).get("name"));
+                                    return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).getString("name"));
                                 } else if (args.length == 4) {
                                     List<String> description = new ArrayList<>();
                                     description.add("<" + t.t("builder_team.edit.tab_description", playerUUID) + ">");
@@ -333,33 +335,33 @@ public class Team implements CommandExecutor, TabCompleter {
                         player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
                         return null;
                     } else if (args.length == 2) {
-                        return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).get("name"));
+                        return Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).getString("name"));
                     }
                     break;
 
 
                 case "kick","addManager":
 
-                    List<String> team = Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).get("name"));
-                    HashMap m = (HashMap) builderSystem.getTeam(team.get(0));
-                    Object[] n = (Object[]) m.get("user_ids");
+                    List<String> team = Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).getString("name"));
+                    JSONObject teamObject = builderSystem.getTeam(team.get(0));
+                    JSONArray userIds = teamObject.getJSONArray("user_ids");
                     ArrayList<String> names = new ArrayList<>();
-                    for (Object o : n) {
-                        HashMap k = (HashMap) o;
-                        String uuid = (String) k.get("mc_uuid");
+                    for (int i = 0; i < userIds.length(); i++) {
+                        JSONObject user = userIds.getJSONObject(i);
+                        String uuid = user.getString("mc_uuid");
                         String playerName = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
                         names.add(playerName);
                     }
                     return names;
 
                 case "removemanager":
-                    List<String> team2 = Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).get("name"));
-                    HashMap m2 = (HashMap) builderSystem.getTeam(team2.get(0));
-                    Object[] n2 = (Object[]) m2.get("manager_ids");
+                    List<String> team2 = Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).getString("name"));
+                    JSONObject teamObject2 = builderSystem.getTeam(team2.get(0));
+                    JSONArray userIds2 = teamObject2.getJSONArray("manager_ids");
                     ArrayList<String> names2 = new ArrayList<>();
-                    for (Object o : n2) {
-                        HashMap k = (HashMap) o;
-                        String uuid = (String) k.get("mc_uuid");
+                    for (int i = 0; i < userIds2.length(); i++) {
+                        JSONObject user = userIds2.getJSONObject(i);
+                        String uuid = user.getString("mc_uuid");
                         String playerName = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
                         names2.add(playerName);
                     }
@@ -371,9 +373,10 @@ public class Team implements CommandExecutor, TabCompleter {
                         return playerNames;
                     } else if (args.length == 3) {
                         List<String> teamlistofplayer = new ArrayList<>();
-                        for (Object o4 : builderSystem.getAllTeams()) {
-                            HashMap m4 = (HashMap) o4;
-                            teamlistofplayer.add((String) m4.get("name"));
+                        JSONArray teamlist = builderSystem.getAllTeams();
+                        for (int i = 0; i < teamlist.length(); i++) {
+                            JSONObject team3 = teamlist.getJSONObject(i);
+                            teamlistofplayer.add(team3.getString("name"));
                         }
 
                         return teamlistofplayer;

@@ -13,6 +13,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,25 +77,25 @@ public class    Tasks implements CommandExecutor, TabCompleter {
                             break;
                         }
                     case "list":
-                        for (Object o : builderSystem.getAllTasks()) {
-                            HashMap m = (HashMap) o;
-                            player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + m.get("id").toString());
-                            player.sendMessage(ChatColor.GRAY + "Name: " + ChatColor.WHITE + m.get("name").toString());
-                            if (!Objects.equals(m.get("description").toString(), "false"))
-                                player.sendMessage(ChatColor.GRAY + "Description: " + ChatColor.WHITE + m.get("description").toString());
-                            player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + m.get("build_width").toString() + " x " + m.get("build_length").toString());
+                        JSONArray tasks = builderSystem.getAllTasks();
+                        for (int i = 0; i < tasks.length(); i++) {
+                            JSONObject task = tasks.getJSONObject(i);
+                            player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getString("id"));
+                            player.sendMessage(ChatColor.GRAY + "Name: " + ChatColor.WHITE + task.getString("name"));
+                            if (!Objects.equals(task.getString("description"), "false"))
+                                player.sendMessage(ChatColor.GRAY + "Description: " + ChatColor.WHITE + task.getString("description"));
+                            player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + task.getString("build_width") + " x " + task.getString("build_length"));
                            player.sendMessage("Teams :");
-                            for (Object id : (Object[]) m.get("world_ids")) {
-                                HashMap idMap = (HashMap) id;
-                                for (Object world_info : (Object[]) builderSystem.getWorld(Integer.parseInt((String) idMap.get("id")))) {
-                                    HashMap world_infoMap = (HashMap) world_info;
-
-                            for (Object team : (Object[]) idMap.get("team_manager_ids")) {
-                                HashMap teamMap = (HashMap) team;
-
+                           JSONArray worlds = task.getJSONArray("world_ids");
+                            for (int j = 0; j < worlds.length(); j++) {
+                                JSONObject world = worlds.getJSONObject(j);
+                                JSONObject worldObject = builderSystem.getWorld(world.getInt("id"));
+                                JSONArray teams = worldObject.getJSONArray("team_manager_ids");
+                            for (int j = 0; j < teams.length(); j++) {
 
 
-                                String teamname = world_infoMap.get("name").toString();
+
+                                String teamname = worldObject.getString("name");
                                 StringBuilder res = new StringBuilder();
                                 res.append(ChatColor.GRAY +"");
                                 res.append(teamname).append(""+ChatColor.WHITE + " , " + ChatColor.GRAY +"" );
@@ -108,7 +110,7 @@ public class    Tasks implements CommandExecutor, TabCompleter {
 //                                    for (Object world : (Object[]) world_infoMap.get("world_id")) {
 //                                        HashMap worldMap = (HashMap) world;
 
-                                        String worldname = world_infoMap.get("name").toString();
+                                        String worldname = worldObject.getString("name");
                                         StringBuilder res = new StringBuilder();
                                         res.append(ChatColor.GRAY + "");
                                         res.append(worldname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
