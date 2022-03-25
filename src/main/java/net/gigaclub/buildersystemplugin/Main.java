@@ -52,7 +52,7 @@ public final class Main extends JavaPlugin {
                 config.getString("Base.Odoo.Username"),
                 config.getString("Base.Odoo.Password")
         ));
-
+        translation.setCategory("buildersystem");
         setBuilderSystem(new BuilderSystem(
                 config.getString("Base.Odoo.Host"),
                 config.getString("Base.Odoo.Database"),
