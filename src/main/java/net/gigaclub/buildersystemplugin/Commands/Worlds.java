@@ -188,7 +188,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     JSONArray worlds = builderSystem.getAllWorlds();
                     for (int i = 0; i < worlds.length(); i++) {
                         JSONObject world = worlds.getJSONObject(i);
-                        player.sendMessage(ChatColor.GRAY + t.t("BuilderSystem.world.id_list", playerUUID) + " " + ChatColor.WHITE + world.getString("world_id"));
+                        player.sendMessage(ChatColor.GRAY + t.t("BuilderSystem.world.id_list", playerUUID) + " " + ChatColor.WHITE + world.getInt("world_id"));
                         player.sendMessage(ChatColor.GRAY + t.t("BuilderSystem.world.name_list", playerUUID) + " " + ChatColor.WHITE + world.getString("name"));
                         player.sendMessage(ChatColor.GRAY + t.t("BuilderSystem.world.world_typ_list", playerUUID) + " " + ChatColor.WHITE + world.getString("world_type"));
                         player.sendMessage("");
@@ -197,16 +197,15 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                         for (int j = 0; j < teams.length(); j++) {
                             JSONObject team = teams.getJSONObject(j);
-                            if (team.get("team_manager_id") != null) {
-                                String teamname = team.getString("name");
-                                StringBuilder res = new StringBuilder();
-                                res.append(ChatColor.GRAY + "");
-                                res.append(teamname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
+                            String teamname = team.getString("name");
+                            StringBuilder res = new StringBuilder();
+                            res.append(ChatColor.GRAY + "");
+                            res.append(teamname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
 
-                                res.toString();
+                            res.toString();
 
-                                player.sendMessage(res.toString());
-                            }
+                            player.sendMessage(res.toString());
+
                         }
                         player.sendMessage("");
 
@@ -215,24 +214,23 @@ public class Worlds implements CommandExecutor, TabCompleter {
                         for (int j = 0; j < users.length(); j++) {
 
                             JSONObject user = users.getJSONObject(j);
-                            if (user.get("name") != null) {
 
-                                Player player11 = Bukkit.getPlayer(user.getString("name"));
-                                String player21 = player11.toString();
-                                StringBuilder res1 = new StringBuilder();
+                            Player player11 = Bukkit.getPlayer(user.getString("name"));
+                            String player21 = player11.toString();
+                            StringBuilder res1 = new StringBuilder();
 
-                                res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
-                                String strValue = "ChatColor.GRAY +";
+                            res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
+                            String strValue = "ChatColor.GRAY +";
 
-                                res1.append(new StringBuilder(strValue).reverse());
-                                res1.toString();
+                            res1.append(new StringBuilder(strValue).reverse());
+                            res1.toString();
 
-                                player.sendMessage(res1.toString());
-                            }
+                            player.sendMessage(res1.toString());
+
                         }
-                            player.sendMessage(" ");
+
                             player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
-                            player.sendMessage(" ");
+
                         }
                         break;
 

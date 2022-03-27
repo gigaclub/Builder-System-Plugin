@@ -57,7 +57,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
 
                             if (args.length == 2) {
                                 // nur name
-                                builderSystem.createTask(args[1], "false", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
+                                builderSystem.createTask(args[1], "", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
                                 player.sendMessage(t.t("builder_team.task.create.task_name_succses", playerUUID));
                             } else if (args.length >= 3) {
                                 // name + description
@@ -91,27 +91,18 @@ public class Tasks implements CommandExecutor, TabCompleter {
 
                             player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id"));
                             player.sendMessage(ChatColor.GRAY + "Name: " + ChatColor.WHITE + task.getString("name"));
-                            if (!Objects.equals(task.getString("description"), "false"))
+                            try {
+                                task.getBoolean("description");
+                            } catch (Exception e) {
                                 player.sendMessage(ChatColor.GRAY + "Description: " + ChatColor.WHITE + task.getString("description"));
+                            }
                             player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
                             JSONArray worlds = task.getJSONArray("world_ids");
-                            player.sendMessage("World Names:");
-                            for (int j = 0; j < worlds.length(); j++) {
-                                JSONObject world = worlds.getJSONObject(j);
-                                JSONObject worldObject = builderSystem.getWorld(world.getInt("id"));
+                            player.sendMessage("Projeckt count: " + worlds.length());
 
-                                String teamname = worldObject.getString("name");
-                                StringBuilder res = new StringBuilder();
-                                res.append(ChatColor.GRAY + "");
-                                res.append(teamname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
-
-                                res.toString();
-
-                                player.sendMessage(res.toString());
-
-                            }
+                            player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
                         }
-                        player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
+
 
                         break;
                 }

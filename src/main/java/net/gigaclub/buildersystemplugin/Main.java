@@ -47,8 +47,6 @@ public final class Main extends JavaPlugin {
         getCommand("gcprojekt").setTabCompleter(projeckt);
 
 
-        setConfig();
-
 
         File file = new File("plugins//" + "Odoo", "config.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);

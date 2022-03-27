@@ -9,6 +9,7 @@ import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -86,59 +87,87 @@ public class joinlistener implements Listener {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         FileConfiguration config = getConfig();
 
+
+
         if (config.getBoolean("server.server_autostart")) {
+            String playerName = player.getName();
+            JSONArray worlds = builderSystem.getAllWorlds();
+            System.out.println(worlds);
+            for (int i = 0; i < worlds.length(); i++) {
+                JSONObject world = worlds.getJSONObject(i);
+                JSONArray users = world.getJSONArray("user_ids");
+                for (int j = 0; j < users.length(); j++) {
+                    JSONObject user = users.getJSONObject(j);
+                    String userUUID = user.getString("mc_uuid");
+                    if (Objects.equals(userUUID, playerUUID)) {
+                        startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
+                    }
+                }
+                JSONArray managers = world.getJSONArray("user_manager_ids");
+                for (int j = 0; j < managers.length(); j++) {
+                    JSONObject manager = managers.getJSONObject(j);
+                    String userUUID = manager.getString("mc_uuid");
+                    if (Objects.equals(userUUID, playerUUID)) {
+                        startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
+                    }
+                }
+            }
 
             JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
             if (Objects.equals(team.getString("name"), "false")) {
-                System.out.println("no name");
                 return;
             }
 
             String team_name = team.getString("name");
             System.out.println(1 + " " + team_name);
             JSONArray teamWorlds = team.getJSONArray("world_ids");
+            JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
             for (int i = 0; i < teamWorlds.length(); i++) {
-                JSONObject world_data = teamWorlds.getJSONObject(i);
-                System.out.println(1.1);
-                int world_id = Integer.parseInt(world_data.getString("id"));
-                System.out.println("ID: " + world_id);
-                JSONObject world = builderSystem.getWorld(world_id);
-                System.out.println(1.2);
-                String world_name = world.getString("name");
-                int task_id = world.getInt("task_id");
-                JSONObject task = builderSystem.getTask(task_id);
-                System.out.println(1.3);
-                String task_name = task.getString("name");
-
-                String worlds_typ = world.getString("world_type");
-                //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-                System.out.println(world_name + " " + task_name + " " + task_id + " " + worlds_typ + " " + world_id + " " + team_name);
-                System.out.println(2);
-                player.sendMessage(t.t("bsc.Command.CreateServer", playerUUID));
-                player.sendMessage(t.t("bsc.Command.Teleport", playerUUID));
-                ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
-                        .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
-                        .node("Node-1")
-                        .autoDeleteOnStop(true)
-                        .staticService(false)
-                        .templates(new ServiceTemplate("Builder", worlds_typ, "local"))
-                        .groups("Builder")
-                        .maxHeapMemory(1525)
-                        .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
-                        .build()
-                        .createNewService();
-
-                System.out.println("nach server daten");
-                if (serviceInfoSnapshot != null) {
-                    System.out.println(3);
-                    serviceInfoSnapshot.provider().start();
-                    serviceId = serviceInfoSnapshot.getServiceId().getTaskServiceId();
-                }
-
-
+                startServer(teamWorlds, i, builderSystem, playerUUID, team_name, t, player);
             }
-
+            for (int i = 0; i < teamWorldManagers.length(); i++) {
+                startServer(teamWorldManagers, i, builderSystem, playerUUID, team_name, t, player);
+            }
         }
     }
+
+    private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {
+        JSONObject world_data = teamWorlds.getJSONObject(i);
+        int world_id = 0;
+        try {
+            world_id = world_data.getInt("id");
+        } catch (Exception e) {
+            world_id = world_data.getInt("world_id");
+        }
+        JSONObject world = builderSystem.getWorld(world_id);
+
+        String world_name = world.getString("name");
+        int task_id = world.getInt("task_id");
+        JSONObject task = builderSystem.getTask(task_id);
+
+        String task_name = task.getString("name");
+
+        String worlds_typ = world.getString("world_type");
+        //  world_name, task_name, task_id, worlds_typ, word_id, team_name
+        player.sendMessage(t.t("bsc.Command.CreateServer", playerUUID));
+        player.sendMessage(t.t("bsc.Command.Teleport", playerUUID));
+        ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
+                .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
+                .node("Node-1")
+                .autoDeleteOnStop(true)
+                .staticService(false)
+                .templates(new ServiceTemplate("Builder", worlds_typ, "local"))
+                .groups("Builder")
+                .maxHeapMemory(1525)
+                .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
+                .build()
+                .createNewService();
+
+        if (serviceInfoSnapshot != null) {
+            serviceInfoSnapshot.provider().start();
+            serviceId = serviceInfoSnapshot.getServiceId().getTaskServiceId();
+        }
+    }
+
 }
 
