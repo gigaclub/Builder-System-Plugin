@@ -17,15 +17,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
 
-public class    Tasks implements CommandExecutor, TabCompleter {
+public class Tasks implements CommandExecutor, TabCompleter {
 
-   @Override
+    private static boolean isInt(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         String playerUUID = player.getUniqueId().toString();
@@ -47,8 +55,8 @@ public class    Tasks implements CommandExecutor, TabCompleter {
                         }
                         if (player.hasPermission("builderteam.admin")) {
 
-                                if (args.length == 2) {
-                                    // nur name
+                            if (args.length == 2) {
+                                // nur name
                                 builderSystem.createTask(args[1], "false", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
                                 player.sendMessage(t.t("builder_team.task.create.task_name_succses", playerUUID));
                             } else if (args.length >= 3) {
@@ -65,7 +73,7 @@ public class    Tasks implements CommandExecutor, TabCompleter {
                             return false;
                         }
                         if (player.hasPermission("builderteam.admin")) {
-                                 if (args.length == 2) {
+                            if (args.length == 2) {
                                 if (isInt(args[1])) {
 
                                     int i = Integer.parseInt(args[1]);
@@ -80,58 +88,35 @@ public class    Tasks implements CommandExecutor, TabCompleter {
                         JSONArray tasks = builderSystem.getAllTasks();
                         for (int i = 0; i < tasks.length(); i++) {
                             JSONObject task = tasks.getJSONObject(i);
-                            player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getString("id"));
+
+                            player.sendMessage(ChatColor.GRAY + "ID: " + ChatColor.WHITE + task.getInt("id"));
                             player.sendMessage(ChatColor.GRAY + "Name: " + ChatColor.WHITE + task.getString("name"));
                             if (!Objects.equals(task.getString("description"), "false"))
                                 player.sendMessage(ChatColor.GRAY + "Description: " + ChatColor.WHITE + task.getString("description"));
-                            player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + task.getString("build_width") + " x " + task.getString("build_length"));
-                           player.sendMessage("Teams :");
-                           JSONArray worlds = task.getJSONArray("world_ids");
+                            player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
+                            JSONArray worlds = task.getJSONArray("world_ids");
+                            player.sendMessage("World Names:");
                             for (int j = 0; j < worlds.length(); j++) {
                                 JSONObject world = worlds.getJSONObject(j);
                                 JSONObject worldObject = builderSystem.getWorld(world.getInt("id"));
-                                JSONArray teams = worldObject.getJSONArray("team_manager_ids");
-                            for (int j = 0; j < teams.length(); j++) {
-
-
 
                                 String teamname = worldObject.getString("name");
                                 StringBuilder res = new StringBuilder();
-                                res.append(ChatColor.GRAY +"");
-                                res.append(teamname).append(""+ChatColor.WHITE + " , " + ChatColor.GRAY +"" );
+                                res.append(ChatColor.GRAY + "");
+                                res.append(teamname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
 
                                 res.toString();
 
                                 player.sendMessage(res.toString());
-                            }
-
-                            player.sendMessage("World Names:");
-
-//                                    for (Object world : (Object[]) world_infoMap.get("world_id")) {
-//                                        HashMap worldMap = (HashMap) world;
-
-                                        String worldname = worldObject.getString("name");
-                                        StringBuilder res = new StringBuilder();
-                                        res.append(ChatColor.GRAY + "");
-                                        res.append(worldname).append("" + ChatColor.WHITE + " , " + ChatColor.GRAY + "");
-
-                                        res.toString();
-
-                                        player.sendMessage(res.toString());
-//                                    }
-                                }
-
-                                player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
-
 
                             }
-                            break;
                         }
+                        player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
+
+                        break;
                 }
+
             }
-
-
-
         }
         return false;
     }
@@ -145,9 +130,11 @@ public class    Tasks implements CommandExecutor, TabCompleter {
 
 
         List<String> teamlistofplayer = new ArrayList<>();
-        for (Object o : builderSystem.getAllTeams()) {
-            HashMap m = (HashMap) o;
-            teamlistofplayer.add((String) m.get("name"));
+        JSONArray getTeamList = builderSystem.getAllTeams();
+        for (int i = 0; i < getTeamList.length(); i++) {
+
+            String objecktTeamList = getTeamList.getJSONObject(i).getString("name");
+
         }
         List<String> playerNames = new ArrayList<>();
         Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
@@ -181,20 +168,25 @@ public class    Tasks implements CommandExecutor, TabCompleter {
                         List<String> createname = new ArrayList<>();
                         createname.add("<" + t.t("builder_team.task.create.tab_task_name", playerUUID) + ">");
                         return createname;
+
                     } else if (args.length == 3) {
                         List<String> createDescription = new ArrayList<>();
                         createDescription.add("<" + t.t("builder_team.task.create.tab_task_x_size", playerUUID) + ">");
                         return createDescription;
+
                     } else if (args.length == 4) {
                         List<String> createDescription = new ArrayList<>();
                         createDescription.add("<" + t.t("builder_team.task.create.tab_task_y_size", playerUUID) + ">");
                         return createDescription;
+
                     } else if (args.length == 5) {
                         List<String> createDescription = new ArrayList<>();
                         createDescription.add("<" + t.t("builder_team.create.tab_description", playerUUID) + ">");
                         return createDescription;
+
                     }
                     break;
+
                 case "remove":
                     if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
@@ -203,7 +195,7 @@ public class    Tasks implements CommandExecutor, TabCompleter {
 
 
                     }
-                   break;
+                    break;
             }
         return null;
     }
@@ -230,19 +222,16 @@ public class    Tasks implements CommandExecutor, TabCompleter {
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
         List<String> tasklistofplayer = new ArrayList<>();
-        for (Object o : builderSystem.getAllWorlds()) {
-            HashMap m = (HashMap) o;
-            res.append(m.get("world_ids") + " , ");
+        JSONArray getWorldList = builderSystem.getAllWorlds();
+        for (int i = 0; i < getWorldList.length(); i++) {
+
+            String objecktTeamList = getWorldList.getJSONObject(i).getString("name");
+
+            res.append(objecktTeamList + " , ");
 
             return res.toString();
         }
-
-
         return "false";
     }
-
-    private static boolean isInt(String str)
-    { try { Integer.parseInt(str); return true;
-    } catch(NumberFormatException e){ return false; } }
 
 }

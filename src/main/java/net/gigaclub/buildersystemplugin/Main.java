@@ -5,15 +5,19 @@ import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Commands.*;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
-import net.gigaclub.buildersystemplugin.Config.OdooConfig;
 import net.gigaclub.buildersystemplugin.listener.joinlistener;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
+import java.io.File;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
     private static Main plugin;
@@ -42,22 +46,26 @@ public final class Main extends JavaPlugin {
         getCommand("gcprojekt").setExecutor(projeckt);
         getCommand("gcprojekt").setTabCompleter(projeckt);
 
+
         setConfig();
-        FileConfiguration config = getConfig();
+
+
+        File file = new File("plugins//" + "Odoo", "config.yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         CloudNetDriver.getInstance().getEventManager() .registerListener(projeckt);
         setTranslation(new Translation(
-                config.getString("Base.Odoo.Host"),
-                config.getString("Base.Odoo.Database"),
-                config.getString("Base.Odoo.Username"),
-                config.getString("Base.Odoo.Password")
+                config.getString("Odoo.Host"),
+                config.getString("Odoo.Database"),
+                config.getString("Odoo.Username"),
+                config.getString("Odoo.Password")
         ));
-        translation.setCategory("buildersystem");
+        translation.setCategory("builderSystem");
         setBuilderSystem(new BuilderSystem(
-                config.getString("Base.Odoo.Host"),
-                config.getString("Base.Odoo.Database"),
-                config.getString("Base.Odoo.Username"),
-                config.getString("Base.Odoo.Password")
+                config.getString("Odoo.Host"),
+                config.getString("Odoo.Database"),
+                config.getString("Odoo.Username"),
+                config.getString("Odoo.Password")
         ));
 
         registerTranslations();
@@ -66,12 +74,6 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new joinlistener(), this);
 
         CloudNetDriver.getInstance().getEventManager() .registerListener(bsc);
-        setTranslation(new Translation(
-                config.getString("Base.Odoo.Host"),
-                config.getString("Base.Odoo.Database"),
-                config.getString("Base.Odoo.Username"),
-                config.getString("Base.Odoo.Password")
-        ));
 
     }
 
@@ -96,12 +98,10 @@ public final class Main extends JavaPlugin {
     private void setConfig() {
         Config.createConfig();
 
-        OdooConfig.setOdooConfig();
         ConfigTeams.setConfigTeams();
-
         Config.save();
 
-        System.out.println(PREFIX + "Config files set.");
+        Logger.getLogger().info(PREFIX + "Config files set.");
     }
     public static Main getPlugin() {
         return plugin;
@@ -137,6 +137,9 @@ public final class Main extends JavaPlugin {
                 "builder_team.add_manager",
                 "builder_team.add",
                 "builder_team.no_permission",
+                "builder_team.invite.sender",
+                "builder_team.invite.receiver",
+                "builder_team.TimerTimeLeft",
 
                 "builder_team.create.tab_teamname",
                 "builder_team.create.tab_description",

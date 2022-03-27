@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class Config {
 
-    private static File configFile;
-    private static FileConfiguration config;
+    static File configFile;
+    static FileConfiguration config;
 
     public static FileConfiguration getConfig() {
         return Config.config;
@@ -22,8 +22,12 @@ public class Config {
         Config.configFile = new File("plugins//" + Main.getPlugin().getDescription().getName(), "config.yml");
         Config.config = YamlConfiguration.loadConfiguration(configFile);
         Config.config.options().copyDefaults(true);
+
+
         Config.save();
     }
+
+
 
     public static void save() {
         try {
