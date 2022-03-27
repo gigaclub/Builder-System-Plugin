@@ -101,7 +101,7 @@ public final class Main extends JavaPlugin {
         ConfigTeams.setConfigTeams();
         Config.save();
 
-        Logger.getLogger().info(PREFIX + "Config files set.");
+    getLogger().info(PREFIX + "Config files set.");
     }
     public static Main getPlugin() {
         return plugin;
