@@ -7,14 +7,17 @@ plugins {
 group = "net.gigaclub"
 version = "1.18.2.1.0.0"
 
+
 apply(plugin = "java")
 
 group = project.group
 version = project.version
 
+
 val spigotPluginsDir: String? by project
 val GITHUB_PACKAGES_USERID: String by project
 val GITHUB_PACKAGES_IMPORT_TOKEN: String by project
+
 
 repositories {
     mavenCentral()
@@ -27,11 +30,13 @@ repositories {
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
     maven {
+
         name = "extendedclip"
         url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     }
 	maven {
         name = "GitHubPackages"
+
         url = uri("https://maven.pkg.github.com/gigaclub/translationapi")
         metadataSources {
             mavenPom()
@@ -42,7 +47,9 @@ repositories {
             password = GITHUB_PACKAGES_IMPORT_TOKEN
         }
     }
-	maven {
+
+    maven {
+
         name = "GitHubPackagesBuilderSystem"
         url = uri("https://maven.pkg.github.com/gigaclub/buildersystemapi")
         metadataSources {
@@ -54,6 +61,7 @@ repositories {
             password = GITHUB_PACKAGES_IMPORT_TOKEN
         }
     }
+
 	maven {
         name = "releases"
         url = uri("https://repo.cloudnetservice.eu/repository/releases/")
@@ -78,6 +86,7 @@ dependencies {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
 }
 
 tasks {
@@ -90,8 +99,10 @@ tasks {
         }
     }
 
+
     build {
         dependsOn(shadowJar)
     }
 
 }
+

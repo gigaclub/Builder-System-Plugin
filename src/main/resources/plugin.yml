@@ -1,8 +1,10 @@
 name: Builder_System_Plugin
 version: ${project.version}
 main: net.gigaclub.buildersystemplugin.Main
+
 api-version: 1.18
 authors: [Feier68]
+
 description: Builder-System-Plugin
 depend:
   - Translation
@@ -19,3 +21,4 @@ commands:
     description: command zum verwalten von task
   gcprojekt:
     description: command zum verwalten von welten/Projeckte
+
