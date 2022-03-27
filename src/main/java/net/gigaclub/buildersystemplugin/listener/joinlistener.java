@@ -92,7 +92,7 @@ public class joinlistener implements Listener {
         if (config.getBoolean("server.server_autostart")) {
             String playerName = player.getName();
             JSONArray worlds = builderSystem.getAllWorlds();
-            System.out.println(worlds);
+
             for (int i = 0; i < worlds.length(); i++) {
                 JSONObject world = worlds.getJSONObject(i);
                 JSONArray users = world.getJSONArray("user_ids");
@@ -119,7 +119,7 @@ public class joinlistener implements Listener {
             }
 
             String team_name = team.getString("name");
-            System.out.println(1 + " " + team_name);
+
             JSONArray teamWorlds = team.getJSONArray("world_ids");
             JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
             for (int i = 0; i < teamWorlds.length(); i++) {
