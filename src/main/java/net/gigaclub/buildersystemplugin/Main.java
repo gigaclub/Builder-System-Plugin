@@ -1,6 +1,7 @@
 package net.gigaclub.buildersystemplugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
+import fr.minuskube.inv.InventoryManager;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Commands.*;
 import net.gigaclub.buildersystemplugin.Config.Config;
@@ -45,6 +46,8 @@ public final class Main extends JavaPlugin {
         Worlds projeckt = new Worlds();
         getCommand("gcprojekt").setExecutor(projeckt);
         getCommand("gcprojekt").setTabCompleter(projeckt);
+
+
 
 
 
@@ -120,58 +123,77 @@ public final class Main extends JavaPlugin {
 
     public static void registerTranslations() {
         Main.translation.registerTranslations(Arrays.asList(
+                //allrounder
                 "builder_team.to_less_arguments",
                 "builder_team.wrong_arguments",
                 "BuilderSystem.toomany_Arguments",
 
-                "builder_team.create.only_name",
-                "builder_team.Create.name_desc",
+                // tab
+                "builder_team.edit.tab_teamname",
+                "builder_team.edit.tab_description",
+                "builder_team.tab_task_id",
 
-                "builder_team.edit.name",
-                "builder_team.edit.description",
-
+                //Team Command output
                 "builder_team.leave",
                 "builder_team.kick",
                 "builder_team.add_manager",
                 "builder_team.add",
                 "builder_team.no_permission",
+                "builder_team.TimerTimeLeft",
+                //Team Command Create
+                "builder_team.create.only_name",
+                "builder_team.create.name_desc",
+                //Team Command Invite
                 "builder_team.invite.sender",
                 "builder_team.invite.receiver",
-                "builder_team.TimerTimeLeft",
+                //Team Command Edit
+                "builder_team.edit.name",
+                "builder_team.edit.description",
 
+                //Team Command Create
                 "builder_team.create.tab_teamname",
                 "builder_team.create.tab_description",
 
-                "builder_team.edit.tab_teamname",
-                "builder_team.edit.tab_description",
 
+                //Task Command output
                 "builder_team.task.remove_succses",
-                "builder_team.task.create.tab_task_name",
-                "builder_team.task.create.tab_task_x_size",
-                "builder_team.task.create.tab_task_y_size",
                 "builder_team.task.create.task_name_succses",
                 "builder_team.task.create.task_name_desc_succses",
                 "builder_team.task_id",
+                //Task Command List
+                "builder_team.task.list.Description",
+                "builder_team.task.list.build_size",
+                "builder_team.task.list.projeckt_count",
+                //Task tab
+                "builder_team.task.create.tab_task_name",
+                "builder_team.task.create.tab_task_x_size",
+                "builder_team.task.create.tab_task_y_size",
 
-                "builder_team.tab_task_id",
 
-                "builder_team.world.tab_world_name",
-                "BuilderSystem.world.id_list",
-                "BuilderSystem.world.name_list",
-                "BuilderSystem.world.world_typ_list",
-                "BuilderSystem.world.team_list",
-                "BuilderSystem.world.user_list",
+                //World Command output
                 "BuilderSystem.world.create_team_succses",
                 "BuilderSystem.world.create_user_succses",
                 "BuilderSystem.world.remove_succses",
                 "BuilderSystem.world.addteam_succses",
                 "BuilderSystem.world.adduser_succses",
+                //World list Command
+                "BuilderSystem.world.id_list",
+                "BuilderSystem.world.name_list",
+                "BuilderSystem.world.world_typ_list",
+                "BuilderSystem.world.team_list",
+                "BuilderSystem.world.user_list",
+                //World tab
+                "builder_team.world.tab_world_name",
 
+
+                // countdown
                 "BuilderSystem.countdown_begin"
-//      status msg´s
+
+                //      status msg´s
 
 
         ));
     }
+
 
 }
