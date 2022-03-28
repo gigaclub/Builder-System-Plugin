@@ -35,12 +35,16 @@ public class Team implements CommandExecutor, TabCompleter {
     }
 
 
+
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
+
+
 
 
         if (sender instanceof Player) {
@@ -54,7 +58,6 @@ public class Team implements CommandExecutor, TabCompleter {
                 switch (args[0].toLowerCase()) {
 
                     case "create":
-
                         if (args.length == 2) {
 
                             int status = builderSystem.createTeam(playerUUID, args[1]);
@@ -76,7 +79,7 @@ public class Team implements CommandExecutor, TabCompleter {
                             switch (status) {
                                 case 0 ->
                                         //                      z.b du hast die gruppe args[1] mit der beschreibung ...
-                                        player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.Create.name_desc", playerUUID, Arrays.asList(getDescription(args, 2))));
+                                        player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.create.name_desc", playerUUID, Arrays.asList(getDescription(args, 2))));
                                 case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.create.team_could_not_be_created", playerUUID));
                                 case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_with_name_already_exists", playerUUID));
                                 case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.player_can_only_create_one_team", playerUUID));
@@ -134,7 +137,7 @@ public class Team implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "kick":
-                            if (args.length == 2) {
+                        if (args.length == 2) {
                             String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
                             int status2 = builderSystem.kickMember(playerUUID, p);
                             switch (status2) {
@@ -203,7 +206,7 @@ public class Team implements CommandExecutor, TabCompleter {
                             } else {
                                 int status3 = builderSystem.inviteMember(playerUUID, empengeruuid);
                                 switch (status3) {
-                                  //  case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.invite_success", playerUUID));
+                                    //  case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.invite_success", playerUUID));
                                     case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_already_manager_of_this_team", playerUUID));
                                     case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
                                     case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
@@ -214,27 +217,27 @@ public class Team implements CommandExecutor, TabCompleter {
                                 JSONObject getTeam = builderSystem.getTeamNameByMember(playerUUID);
 
 
-                                    String teamname = getTeam.getString("name");
+                                String teamname = getTeam.getString("name");
 
-                                    Object o = builderSystem.getTeamNameByMember(playerUUID);
+                                Object o = builderSystem.getTeamNameByMember(playerUUID);
 
 
-                                        player.sendMessage(ChatColor.AQUA +teamname+" "+ "builder_team.invite.sender" +" "+ ChatColor.GREEN + empfängername.getName() );
-                                    empfängername.sendMessage(ChatColor.AQUA + "builder_team.invite.receiver" +" "+ ChatColor.GREEN + teamname);
+                                player.sendMessage(ChatColor.AQUA + teamname + " " + "builder_team.invite.sender" + " " + ChatColor.GREEN + empfängername.getName());
+                                empfängername.sendMessage(ChatColor.AQUA + "builder_team.invite.receiver" + " " + ChatColor.GREEN + teamname);
 
-                                    cooldownManager.setCooldown(player.getUniqueId(), getConfig().getInt("Teams.invite.Timersek"));
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
-                                            cooldownManager.setCooldown(player.getUniqueId(), --timeLeft);
-                                            if (timeLeft == 0) {
-                                                this.cancel();
-                                            }
+                                cooldownManager.setCooldown(player.getUniqueId(), getConfig().getInt("Teams.invite.Timersek"));
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
+                                        cooldownManager.setCooldown(player.getUniqueId(), --timeLeft);
+                                        if (timeLeft == 0) {
+                                            this.cancel();
                                         }
-                                    }.runTaskTimer(this.plugin, 20, 20);
+                                    }
+                                }.runTaskTimer(this.plugin, 20, 20);
 
-                                }
+                            }
 
                         } else {
                             //Hasn't expired yet, shows how many seconds left until it does
@@ -245,8 +248,8 @@ public class Team implements CommandExecutor, TabCompleter {
 
                         builderSystem.acceptRequest(playerUUID, args[1]);
                         break;
-                    case "deny" :
-                        builderSystem.denyRequest(playerUUID,args[1]);
+                    case "deny":
+                        builderSystem.denyRequest(playerUUID, args[1]);
                 }
             }
 
@@ -255,6 +258,7 @@ public class Team implements CommandExecutor, TabCompleter {
             getLogger().info("You´r not a Player  XD");
 
         return false;
+
     }
 
     @Override
@@ -421,7 +425,6 @@ public class Team implements CommandExecutor, TabCompleter {
 
         return res.toString();
     }
-
 
 }
 
