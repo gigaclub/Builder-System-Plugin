@@ -1,7 +1,6 @@
 package net.gigaclub.buildersystemplugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
-import fr.minuskube.inv.InventoryManager;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Commands.*;
 import net.gigaclub.buildersystemplugin.Config.Config;

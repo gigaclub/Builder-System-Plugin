@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.Commands;
 
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.CooldownManager;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.Navigator;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
@@ -49,13 +50,19 @@ public class Team implements CommandExecutor, TabCompleter {
 
         if (sender instanceof Player) {
 
-
+            if (args.length == 0){
+                player.sendMessage("test");
+                Navigator navigator = new Navigator();
+                navigator.openGui(player);
+            }
             if (args.length >= 1) {
                 if (args.length == 1) {
                     player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
                     return false;
                 }
                 switch (args[0].toLowerCase()) {
+
+
 
                     case "create":
                         if (args.length == 2) {

@@ -92,6 +92,7 @@ public class joinlistener implements Listener {
         if (config.getBoolean("server.server_autostart")) {
             String playerName = player.getName();
             JSONArray worlds = builderSystem.getAllWorlds();
+            if (worlds.length() == 0)return;
 
             for (int i = 0; i < worlds.length(); i++) {
                 JSONObject world = worlds.getJSONObject(i);
