@@ -1,15 +1,18 @@
 package net.gigaclub.buildersystemplugin.Andere.InterfaceAPI;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import net.gigaclub.buildersystemplugin.Main;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Navigator implements Listener {
 
@@ -20,9 +23,17 @@ public class Navigator implements Listener {
         int size = 9 * 3;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString()+GUI_NAME));
         for (int j = 0; j < size; j++) {
-            inventory.setItem(j, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setEnchantEffeckt(true).setDisplayName(" ").build());
+            inventory.setItem(j, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setGlow(true).setDisplayName(" ").build());
         }
-        ItemStack apple = new ItemBuilder(Material.APPLE).setDisplayName((ChatColor.BLUE.toString()+"TEST")).setEnchantEffeckt(true).setLore((ChatColor.LIGHT_PURPLE.toString()+"Das ISt ein Test")).addMetaData(1).build();
+        List<String> lore = new ArrayList<>();
+        lore.add("Das ISt ein Test");
+
+
+
+        ItemStack apple = new ItemBuilder(Material.APPLE).setDisplayName((ChatColor.BLUE.toString()+"TEST")).setGlow(true).setLore((ChatColor.LIGHT_PURPLE.toString()+"Das ISt ein Test")).addIdentifier("Opener").build();
+
+
+
         inventory.setItem(11, apple);
         inventory.setItem(15, new ItemStack(Material.GOLDEN_APPLE));
         player.openInventory(inventory);
@@ -38,4 +49,3 @@ public class Navigator implements Listener {
 
 
 }
-

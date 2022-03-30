@@ -66,7 +66,7 @@ repositories {
         name = "releases"
         url = uri("https://repo.cloudnetservice.eu/repository/releases/")
     }
-
+  //  maven("https://repo.incendo.org/content/repositories/snapshots/")
 
 }
 
@@ -82,6 +82,8 @@ dependencies {
     implementation("de.dytanic.cloudnet:cloudnet-driver:3.4.3-RELEASE")
     implementation("net.gigaclub:buildersystemapi:14.0.1.0.7")
     implementation("net.gigaclub:translationapi:14.0.1.0.5")
+ //   implementation("org.incendo.interfaces:interfaces-core:1.0.0-SNAPSHOT")
+ //   implementation("org.incendo.interfaces:interfaces-paper:1.0.0-SNAPSHOT")
 }
 
 java {

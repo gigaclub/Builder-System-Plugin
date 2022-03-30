@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ClickEventBuilder;
 import net.gigaclub.buildersystemplugin.Commands.*;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
@@ -17,9 +18,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.logging.Logger;
+
 
 public final class Main extends JavaPlugin {
+
     private static Main plugin;
     private static Translation translation;
     final public static String PREFIX = "[GC-BSP]: ";
@@ -72,8 +74,10 @@ public final class Main extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new joinlistener(), this);
+        pluginManager.registerEvents(new ClickEventBuilder(),this);
 
         CloudNetDriver.getInstance().getEventManager() .registerListener(bsc);
+
 
     }
 
