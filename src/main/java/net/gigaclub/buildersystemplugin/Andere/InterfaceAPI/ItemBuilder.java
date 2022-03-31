@@ -137,18 +137,19 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
-    public ItemBuilder add(String metadata) {
+    public ItemBuilder setGui(Boolean is_Gui) {
         ItemMeta meta = getItemMeta();
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getPlugin(), "item"), PersistentDataType.INTEGER, 1);
-        setItemMeta(meta);
+        if(is_Gui == true) {
+            PersistentDataContainer data = meta.getPersistentDataContainer();
+            data.set(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER, 1);
+            setItemMeta(meta);
+
+            return this;
+        }
         return this;
     }
 
     public ItemStack build() {
-        ItemMeta meta = getItemMeta();
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER, 1);
         return stack;
     }
 

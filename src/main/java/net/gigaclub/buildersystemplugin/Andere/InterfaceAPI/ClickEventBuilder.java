@@ -26,7 +26,8 @@ public class ClickEventBuilder implements Listener {
         ItemMeta meta = item.getItemMeta();
     PersistentDataContainer data = meta.getPersistentDataContainer();
                if (data.has(new NamespacedKey(Main.getPlugin(),"gui"), PersistentDataType.INTEGER)){
-                   if(data.get(new NamespacedKey(Main.getPlugin(),"gui"),PersistentDataType.INTEGER)==1){
+                   int is_gui = data.get(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER);
+                   if(is_gui == 1){
                        event.setCancelled(true);
                    }
 

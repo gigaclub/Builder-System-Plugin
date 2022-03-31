@@ -32,11 +32,8 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
 		plugin = this;
         setPlugin(this);
-        TapBSC tbsc = new TapBSC();
-        BuildServerCreate bsc = new BuildServerCreate();
+
         setConfig();
-        getCommand("bsc").setExecutor( bsc);
-        getCommand("bsc").setTabCompleter( tbsc);
 
         getCommand("gcteams").setExecutor(new Team(plugin));
         getCommand("gcteams").setTabCompleter(new Team(plugin));
@@ -76,7 +73,6 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new joinlistener(), this);
         pluginManager.registerEvents(new ClickEventBuilder(),this);
 
-        CloudNetDriver.getInstance().getEventManager() .registerListener(bsc);
 
 
     }
