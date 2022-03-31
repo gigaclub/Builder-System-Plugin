@@ -67,7 +67,6 @@ repositories {
         url = uri("https://repo.cloudnetservice.eu/repository/releases/")
     }
 
-
 }
 
 dependencies {

@@ -94,11 +94,11 @@ public class Tasks implements CommandExecutor, TabCompleter {
                             try {
                                 task.getBoolean("description");
                             } catch (Exception e) {
-                                player.sendMessage(ChatColor.GRAY + "Description: " + ChatColor.WHITE + task.getString("description"));
+                                player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.Description", playerUUID)) + " " + ChatColor.WHITE + task.getString("description"));
                             }
-                            player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
+                            player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", playerUUID)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
                             JSONArray worlds = task.getJSONArray("world_ids");
-                            player.sendMessage("Projeckt count: " + worlds.length());
+                            player.sendMessage((t.t("builder_team.task.list.projeckt_count", playerUUID)) + " " + worlds.length());
 
                             player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
                         }

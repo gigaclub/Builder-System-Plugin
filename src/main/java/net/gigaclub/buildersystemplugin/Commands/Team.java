@@ -50,7 +50,7 @@ public class Team implements CommandExecutor, TabCompleter {
                 if (args.length == 1) {
                     player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
                     return false;
-                }
+                }else
                 switch (args[0].toLowerCase()) {
 
                     case "create":
@@ -134,7 +134,7 @@ public class Team implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "kick":
-                            if (args.length == 2) {
+                        if (args.length == 2) {
                             String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
                             int status2 = builderSystem.kickMember(playerUUID, p);
                             switch (status2) {
@@ -203,7 +203,7 @@ public class Team implements CommandExecutor, TabCompleter {
                             } else {
                                 int status3 = builderSystem.inviteMember(playerUUID, empengeruuid);
                                 switch (status3) {
-                                  //  case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.invite_success", playerUUID));
+                                    //  case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.invite_success", playerUUID));
                                     case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_already_manager_of_this_team", playerUUID));
                                     case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
                                     case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
@@ -214,27 +214,27 @@ public class Team implements CommandExecutor, TabCompleter {
                                 JSONObject getTeam = builderSystem.getTeamNameByMember(playerUUID);
 
 
-                                    String teamname = getTeam.getString("name");
+                                String teamname = getTeam.getString("name");
 
-                                    Object o = builderSystem.getTeamNameByMember(playerUUID);
+                                Object o = builderSystem.getTeamNameByMember(playerUUID);
 
 
-                                        player.sendMessage(ChatColor.AQUA +teamname+" "+ "builder_team.invite.sender" +" "+ ChatColor.GREEN + empfängername.getName() );
-                                    empfängername.sendMessage(ChatColor.AQUA + "builder_team.invite.receiver" +" "+ ChatColor.GREEN + teamname);
+                                player.sendMessage(ChatColor.AQUA +teamname+" "+ "builder_team.invite.sender" +" "+ ChatColor.GREEN + empfängername.getName() );
+                                empfängername.sendMessage(ChatColor.AQUA + "builder_team.invite.receiver" +" "+ ChatColor.GREEN + teamname);
 
-                                    cooldownManager.setCooldown(player.getUniqueId(), getConfig().getInt("Teams.invite.Timersek"));
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
-                                            cooldownManager.setCooldown(player.getUniqueId(), --timeLeft);
-                                            if (timeLeft == 0) {
-                                                this.cancel();
-                                            }
+                                cooldownManager.setCooldown(player.getUniqueId(), getConfig().getInt("Teams.invite.Timersek"));
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
+                                        cooldownManager.setCooldown(player.getUniqueId(), --timeLeft);
+                                        if (timeLeft == 0) {
+                                            this.cancel();
                                         }
-                                    }.runTaskTimer(this.plugin, 20, 20);
+                                    }
+                                }.runTaskTimer(this.plugin, 20, 20);
 
-                                }
+                            }
 
                         } else {
                             //Hasn't expired yet, shows how many seconds left until it does
@@ -295,7 +295,6 @@ public class Team implements CommandExecutor, TabCompleter {
         } else
             switch (args[0].toLowerCase()) {
                 case "create":
-                        if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
                         createname.add("<" + t.t("builder_team.create.tab_teamname", playerUUID) + ">");
                         return createname;
@@ -308,7 +307,7 @@ public class Team implements CommandExecutor, TabCompleter {
 
 
                 case "edit":
-                     if (args.length == 2) {
+                    if (args.length == 2) {
                         List<String> arguments = new ArrayList<>();
                         arguments.add("Name");
                         arguments.add("Description");
@@ -424,6 +423,5 @@ public class Team implements CommandExecutor, TabCompleter {
 
 
 }
-
 
 
