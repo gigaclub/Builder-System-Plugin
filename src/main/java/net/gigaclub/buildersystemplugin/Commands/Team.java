@@ -295,6 +295,7 @@ public class Team implements CommandExecutor, TabCompleter {
         } else
             switch (args[0].toLowerCase()) {
                 case "create":
+                    if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
                         createname.add("<" + t.t("builder_team.create.tab_teamname", playerUUID) + ">");
                         return createname;
@@ -401,7 +402,10 @@ public class Team implements CommandExecutor, TabCompleter {
                     }
                     break;
 
+
+
             }
+
         return null;
     }
 
