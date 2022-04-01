@@ -9,6 +9,7 @@ description: Builder-System-Plugin
 depend:
   - Translation
   - CloudNet-Bridge
+  - HeadDatabase
 website: Gigaclub.net
 
 

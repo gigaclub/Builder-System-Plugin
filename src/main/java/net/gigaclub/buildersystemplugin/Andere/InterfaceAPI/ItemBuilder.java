@@ -1,5 +1,6 @@
 package net.gigaclub.buildersystemplugin.Andere.InterfaceAPI;
 
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystemplugin.Main;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -27,11 +28,16 @@ public class ItemBuilder {
 
      */
 
-    private ItemStack stack;
 
+
+
+    private ItemStack stack;
 
     public ItemBuilder(Material mat) {
         stack = new ItemStack(mat);
+    }
+    public ItemBuilder(ItemStack item) {
+        stack =new ItemStack(item);
     }
 
     public ItemBuilder(Material mat, short sh) {
@@ -86,6 +92,7 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+
 
     public ItemBuilder setDisplayName(String displayname) {
         ItemMeta meta = getItemMeta();

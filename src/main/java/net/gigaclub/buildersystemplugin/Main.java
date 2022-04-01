@@ -2,7 +2,7 @@ package net.gigaclub.buildersystemplugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import net.gigaclub.buildersystem.BuilderSystem;
-import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ClickEventBuilder;
+
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.Navigator;
 import net.gigaclub.buildersystemplugin.Commands.Tasks;
 import net.gigaclub.buildersystemplugin.Commands.Team;
@@ -69,7 +69,6 @@ public final class Main extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new joinlistener(), this);
-        pluginManager.registerEvents(new ClickEventBuilder(), this);
         pluginManager.registerEvents(new Navigator(), this);
 
 
