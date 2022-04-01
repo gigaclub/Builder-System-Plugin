@@ -1,7 +1,5 @@
 package net.gigaclub.buildersystemplugin.Andere.InterfaceAPI;
 
-import java.util.ArrayList;
-
 import net.gigaclub.buildersystemplugin.Main;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -14,6 +12,8 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
 
 
 public class ItemBuilder {
@@ -137,9 +137,10 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+
     public ItemBuilder setGui(Boolean is_Gui) {
         ItemMeta meta = getItemMeta();
-        if(is_Gui == true) {
+        if (is_Gui == true) {
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(new NamespacedKey(Main.getPlugin(), "gui"), PersistentDataType.INTEGER, 1);
             setItemMeta(meta);

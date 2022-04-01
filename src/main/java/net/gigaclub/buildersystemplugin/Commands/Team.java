@@ -50,56 +50,70 @@ public class Team implements CommandExecutor, TabCompleter {
                 if (args.length == 1) {
                     player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
                     return false;
-                }else
-                switch (args[0].toLowerCase()) {
+                } else
+                    switch (args[0].toLowerCase()) {
 
-                    case "create":
+                        case "create":
 
-                        if (args.length == 2) {
+                            if (args.length == 2) {
 
-                            int status = builderSystem.createTeam(playerUUID, args[1]);
-                            switch (status) {
-                                case 0 ->
-                                        //                  z.b  Du hast die gruppe args[1] erstellt
-                                        player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.create.only_name", playerUUID));
-                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.create.team_could_not_be_created", playerUUID));
-                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_with_name_already_exists", playerUUID));
-                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.player_can_only_create_one_team", playerUUID));
-                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
+                                int status = builderSystem.createTeam(playerUUID, args[1]);
+                                switch (status) {
+                                    case 0 ->
+                                            //                  z.b  Du hast die gruppe args[1] erstellt
+                                            player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.create.only_name", playerUUID));
+                                    case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.create.team_could_not_be_created", playerUUID));
+                                    case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_with_name_already_exists", playerUUID));
+                                    case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.player_can_only_create_one_team", playerUUID));
+                                    case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
+                                }
+
+
+                            } else if (args.length >= 3) {
+
+                                //                     z.b du hast die gruppe args[1] mit der beschreibung ...
+                                int status = builderSystem.createTeam(playerUUID, args[1], getDescription(args, 2));
+                                switch (status) {
+                                    case 0 ->
+                                            //                      z.b du hast die gruppe args[1] mit der beschreibung ...
+                                            player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.Create.name_desc", playerUUID, Arrays.asList(getDescription(args, 2))));
+                                    case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.create.team_could_not_be_created", playerUUID));
+                                    case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_with_name_already_exists", playerUUID));
+                                    case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.player_can_only_create_one_team", playerUUID));
+                                    case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
+                                }
+
                             }
+                            break;
 
+                        case "edit":
+                            if (args.length == 2) {
+                                player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.to_less_arguments", playerUUID));
+                                return false;
+                            } else {
+                                switch (args[0].toLowerCase()) {
+                                    case "name" -> {
+                                        if (args.length == 3) {
+                                            player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.to_less_arguments", playerUUID));
+                                            return false;
+                                        } else if (args.length == 4) {
+                                            int status = builderSystem.editTeam(playerUUID, args[2], args[3]);
+                                            switch (status) {
+                                                case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.edit.name", playerUUID));
+                                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager_of_this_team", playerUUID));
+                                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_member_of_this_team", playerUUID));
+                                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
+                                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_has_no_team", playerUUID));
+                                                case 5 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
+                                            }
 
-                        } else if (args.length >= 3) {
-
-                            //                     z.b du hast die gruppe args[1] mit der beschreibung ...
-                            int status = builderSystem.createTeam(playerUUID, args[1], getDescription(args, 2));
-                            switch (status) {
-                                case 0 ->
-                                        //                      z.b du hast die gruppe args[1] mit der beschreibung ...
-                                        player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.Create.name_desc", playerUUID, Arrays.asList(getDescription(args, 2))));
-                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.create.team_could_not_be_created", playerUUID));
-                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_with_name_already_exists", playerUUID));
-                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.player_can_only_create_one_team", playerUUID));
-                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                            }
-
-                        }
-                        break;
-
-                    case "edit":
-                        if (args.length == 2) {
-                            player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.to_less_arguments", playerUUID));
-                            return false;
-                        } else {
-                            switch (args[0].toLowerCase()) {
-                                case "name" -> {
-                                    if (args.length == 3) {
-                                        player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.to_less_arguments", playerUUID));
-                                        return false;
-                                    } else if (args.length == 4) {
-                                        int status = builderSystem.editTeam(playerUUID, args[2], args[3]);
+                                        }
+                                    }
+                                    case "description" -> {
+                                        String team = builderSystem.getTeam(args[2]).getString("name");
+                                        int status = builderSystem.editTeam(playerUUID, args[2], team, getDescription(args, 2));
                                         switch (status) {
-                                            case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.edit.name", playerUUID));
+                                            case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.edit.description", playerUUID));
                                             case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager_of_this_team", playerUUID));
                                             case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_member_of_this_team", playerUUID));
                                             case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
@@ -109,145 +123,131 @@ public class Team implements CommandExecutor, TabCompleter {
 
                                     }
                                 }
-                                case "description" -> {
-                                    String team = builderSystem.getTeam(args[2]).getString("name");
-                                    int status = builderSystem.editTeam(playerUUID, args[2], team, getDescription(args, 2));
-                                    switch (status) {
-                                        case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.edit.description", playerUUID));
-                                        case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager_of_this_team", playerUUID));
-                                        case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_member_of_this_team", playerUUID));
-                                        case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
-                                        case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_has_no_team", playerUUID));
-                                        case 5 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                                    }
-
-                                }
+                                break;
+                            }
+                        case "leave":
+                            int status = builderSystem.leaveTeam(playerUUID);
+                            switch (status) {
+                                case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.leave_Team_Success", playerUUID));
+                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.User_has_no_team", playerUUID));
+                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
                             }
                             break;
-                        }
-                    case "leave":
-                        int status = builderSystem.leaveTeam(playerUUID);
-                        switch (status) {
-                            case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.leave_Team_Success", playerUUID));
-                            case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.User_has_no_team", playerUUID));
-                            case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                        }
-                        break;
-                    case "kick":
-                        if (args.length == 2) {
-                            String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
-                            int status2 = builderSystem.kickMember(playerUUID, p);
-                            switch (status2) {
-                                case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.kick_user_success", playerUUID));
-                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_user_of_this_team", playerUUID));
-                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
-                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
-                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                            }
-                        }
-                        break;
-
-                    case "addmanager":
-                        String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
-                        int status2 = builderSystem.promoteMember(playerUUID, p);
-                        switch (status2) {
-                            case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.promoteMember_success", playerUUID));
-                            case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_already_manager_of_this_team", playerUUID));
-                            case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_promote_is_not_in_this_team", playerUUID));
-                            case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_promote_is_not_a_team", playerUUID));
-                            case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
-                            case 5 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
-                            case 6 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                        }
-                        break;
-
-                    case "removemanager":
-                        String p5 = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
-                        int status4 = builderSystem.demoteMember(playerUUID, p5);
-                        switch (status4) {
-                            case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.demoteMember_success", playerUUID));
-                            case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_a_manager_of_this_team", playerUUID));
-                            case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_demoteMember_is_not_in_this_team", playerUUID));
-                            case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_demoteMember_is_not_a_team", playerUUID));
-                            case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
-                            case 5 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
-                            case 6 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                        }
-
-                        break;
-
-                    case "add":
-                        String p2 = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
-                        if (player.hasPermission("builderteam.admin")) {
-                            int status3 = builderSystem.addMember(playerUUID, p2);
-                            switch (status3) {
-                                case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.add_success", playerUUID));
-                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_user_of_this_team", playerUUID));
-                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
-                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
-                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
-                            }
-                            break;
-                        }
-                        break;
-                    case "invite":
-
-
-                        //msg after invite success
-                        String empengeruuid = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
-                        int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
-                        if (timeLeft == 0) {
-
-                            if (Bukkit.getOfflinePlayer(empengeruuid) == null) {
-                                player.sendMessage(ChatColor.RED.toString() + args[2] + t.t("builder_team.is_not_a_player", playerUUID));
-                            } else {
-                                int status3 = builderSystem.inviteMember(playerUUID, empengeruuid);
-                                switch (status3) {
-                                    //  case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.invite_success", playerUUID));
-                                    case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_already_manager_of_this_team", playerUUID));
+                        case "kick":
+                            if (args.length == 2) {
+                                String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
+                                int status2 = builderSystem.kickMember(playerUUID, p);
+                                switch (status2) {
+                                    case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.kick_user_success", playerUUID));
+                                    case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_user_of_this_team", playerUUID));
                                     case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
                                     case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
+                                    case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
                                 }
-                                Player empfängername = Bukkit.getPlayer(args[1]);
-                                List<String> teamn = new ArrayList<>();
+                            }
+                            break;
 
-                                JSONObject getTeam = builderSystem.getTeamNameByMember(playerUUID);
+                        case "addmanager":
+                            String p = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
+                            int status2 = builderSystem.promoteMember(playerUUID, p);
+                            switch (status2) {
+                                case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.promoteMember_success", playerUUID));
+                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_already_manager_of_this_team", playerUUID));
+                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_promote_is_not_in_this_team", playerUUID));
+                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_promote_is_not_a_team", playerUUID));
+                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
+                                case 5 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
+                                case 6 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
+                            }
+                            break;
 
-
-                                String teamname = getTeam.getString("name");
-
-                                Object o = builderSystem.getTeamNameByMember(playerUUID);
-
-
-                                player.sendMessage(ChatColor.AQUA +teamname+" "+ "builder_team.invite.sender" +" "+ ChatColor.GREEN + empfängername.getName() );
-                                empfängername.sendMessage(ChatColor.AQUA + "builder_team.invite.receiver" +" "+ ChatColor.GREEN + teamname);
-
-                                cooldownManager.setCooldown(player.getUniqueId(), getConfig().getInt("Teams.invite.Timersek"));
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
-                                        cooldownManager.setCooldown(player.getUniqueId(), --timeLeft);
-                                        if (timeLeft == 0) {
-                                            this.cancel();
-                                        }
-                                    }
-                                }.runTaskTimer(this.plugin, 20, 20);
-
+                        case "removemanager":
+                            String p5 = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
+                            int status4 = builderSystem.demoteMember(playerUUID, p5);
+                            switch (status4) {
+                                case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.demoteMember_success", playerUUID));
+                                case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_a_manager_of_this_team", playerUUID));
+                                case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_demoteMember_is_not_in_this_team", playerUUID));
+                                case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_to_demoteMember_is_not_a_team", playerUUID));
+                                case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
+                                case 5 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
+                                case 6 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
                             }
 
-                        } else {
-                            //Hasn't expired yet, shows how many seconds left until it does
-                            player.sendMessage(ChatColor.RED.toString() + timeLeft + " " + t.t("builder_team.TimerTimeLeft", playerUUID));
-                        }
-                        break;
-                    case "accept":
+                            break;
 
-                        builderSystem.acceptRequest(playerUUID, args[1]);
-                        break;
-                    case "deny" :
-                        builderSystem.denyRequest(playerUUID,args[1]);
-                }
+                        case "add":
+                            String p2 = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
+                            if (player.hasPermission("builderteam.admin")) {
+                                int status3 = builderSystem.addMember(playerUUID, p2);
+                                switch (status3) {
+                                    case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.add_success", playerUUID));
+                                    case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_user_of_this_team", playerUUID));
+                                    case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
+                                    case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
+                                    case 4 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.other_error", playerUUID));
+                                }
+                                break;
+                            }
+                            break;
+                        case "invite":
+
+
+                            //msg after invite success
+                            String empengeruuid = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId().toString();
+                            int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
+                            if (timeLeft == 0) {
+
+                                if (Bukkit.getOfflinePlayer(empengeruuid) == null) {
+                                    player.sendMessage(ChatColor.RED.toString() + args[2] + t.t("builder_team.is_not_a_player", playerUUID));
+                                } else {
+                                    int status3 = builderSystem.inviteMember(playerUUID, empengeruuid);
+                                    switch (status3) {
+                                        //  case 0 -> player.sendMessage(ChatColor.GREEN.toString() + t.t("builder_team.invite_success", playerUUID));
+                                        case 1 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_already_manager_of_this_team", playerUUID));
+                                        case 2 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.user_is_not_manager", playerUUID));
+                                        case 3 -> player.sendMessage(ChatColor.RED.toString() + t.t("builder_team.team_does_not_exist", playerUUID));
+                                    }
+                                    Player empfängername = Bukkit.getPlayer(args[1]);
+                                    List<String> teamn = new ArrayList<>();
+
+                                    JSONObject getTeam = builderSystem.getTeamNameByMember(playerUUID);
+
+
+                                    String teamname = getTeam.getString("name");
+
+                                    Object o = builderSystem.getTeamNameByMember(playerUUID);
+
+
+                                    player.sendMessage(ChatColor.AQUA + teamname + " " + "builder_team.invite.sender" + " " + ChatColor.GREEN + empfängername.getName());
+                                    empfängername.sendMessage(ChatColor.AQUA + "builder_team.invite.receiver" + " " + ChatColor.GREEN + teamname);
+
+                                    cooldownManager.setCooldown(player.getUniqueId(), getConfig().getInt("Teams.invite.Timersek"));
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            int timeLeft = cooldownManager.getCooldown(player.getUniqueId());
+                                            cooldownManager.setCooldown(player.getUniqueId(), --timeLeft);
+                                            if (timeLeft == 0) {
+                                                this.cancel();
+                                            }
+                                        }
+                                    }.runTaskTimer(this.plugin, 20, 20);
+
+                                }
+
+                            } else {
+                                //Hasn't expired yet, shows how many seconds left until it does
+                                player.sendMessage(ChatColor.RED.toString() + timeLeft + " " + t.t("builder_team.TimerTimeLeft", playerUUID));
+                            }
+                            break;
+                        case "accept":
+
+                            builderSystem.acceptRequest(playerUUID, args[1]);
+                            break;
+                        case "deny":
+                            builderSystem.denyRequest(playerUUID, args[1]);
+                    }
             }
 
 
@@ -263,7 +263,6 @@ public class Team implements CommandExecutor, TabCompleter {
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
-
 
 
         List<String> playerNames = new ArrayList<>();
@@ -352,7 +351,7 @@ public class Team implements CommandExecutor, TabCompleter {
                     break;
 
 
-                case "kick","addManager":
+                case "kick", "addManager":
 
                     List<String> team = Collections.singletonList(builderSystem.getTeamNameByMember(playerUUID).getString("name"));
                     JSONObject teamObject = builderSystem.getTeam(team.get(0));
@@ -401,7 +400,6 @@ public class Team implements CommandExecutor, TabCompleter {
                         return playerNames;
                     }
                     break;
-
 
 
             }

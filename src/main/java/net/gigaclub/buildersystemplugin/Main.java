@@ -3,18 +3,19 @@ package net.gigaclub.buildersystemplugin;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ClickEventBuilder;
-import net.gigaclub.buildersystemplugin.Commands.*;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.Navigator;
+import net.gigaclub.buildersystemplugin.Commands.Tasks;
+import net.gigaclub.buildersystemplugin.Commands.Team;
+import net.gigaclub.buildersystemplugin.Commands.Worlds;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
 import net.gigaclub.buildersystemplugin.listener.joinlistener;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 
 import java.io.File;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-		plugin = this;
+        plugin = this;
         setPlugin(this);
 
         setConfig();
@@ -46,13 +47,10 @@ public final class Main extends JavaPlugin {
         getCommand("gcprojekt").setTabCompleter(projeckt);
 
 
-
-
-
         File file = new File("plugins//" + "Odoo", "config.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        CloudNetDriver.getInstance().getEventManager() .registerListener(projeckt);
+        CloudNetDriver.getInstance().getEventManager().registerListener(projeckt);
         setTranslation(new Translation(
                 config.getString("Odoo.Host"),
                 config.getString("Odoo.Database"),
@@ -71,15 +69,11 @@ public final class Main extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new joinlistener(), this);
-        pluginManager.registerEvents(new ClickEventBuilder(),this);
-
+        pluginManager.registerEvents(new ClickEventBuilder(), this);
+        pluginManager.registerEvents(new Navigator(), this);
 
 
     }
-
-
-
-
 
 
     @Override
@@ -101,8 +95,9 @@ public final class Main extends JavaPlugin {
         ConfigTeams.setConfigTeams();
         Config.save();
 
-    getLogger().info(PREFIX + "Config files set.");
+        getLogger().info(PREFIX + "Config files set.");
     }
+
     public static Main getPlugin() {
         return plugin;
     }
@@ -111,7 +106,7 @@ public final class Main extends JavaPlugin {
         Main.plugin = plugin;
 
     }
-	
+
     public static BuilderSystem getBuilderSystem() {
         return Main.builderSystem;
     }

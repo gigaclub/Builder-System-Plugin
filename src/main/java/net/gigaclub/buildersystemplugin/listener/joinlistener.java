@@ -10,20 +10,15 @@ import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -96,11 +91,10 @@ public class joinlistener implements Listener {
         FileConfiguration config = getConfig();
 
 
-
         if (config.getBoolean("server.server_autostart")) {
             String playerName = player.getName();
             JSONArray worlds = builderSystem.getAllWorlds();
-            if (worlds.length() == 0)return;
+            if (worlds.length() == 0) return;
 
             for (int i = 0; i < worlds.length(); i++) {
                 JSONObject world = worlds.getJSONObject(i);
@@ -180,12 +174,12 @@ public class joinlistener implements Listener {
 
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
-        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setGlow(false).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         Player player = (Player) event.getPlayer();
         player.sendMessage("Willkommen");
         if (player.getInventory().getItem(0) == null) {
-                    player.getInventory().setItem(0, GuiOpener);
-        }else return;
+            player.getInventory().setItem(0, GuiOpener);
+        } else return;
 
     }
 

@@ -15,7 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -94,9 +96,18 @@ public class Worlds implements CommandExecutor, TabCompleter {
                                 JSONObject task = builderSystem.getTask(Taskid);
                                 String TaskName = task.getString("name");
                                 getLogger().info("Taskname: " + TaskName);
-                                builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), TaskName, "default");
-                                player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
-
+                                JSONArray worldTypes = builderSystem.getAllWorldTypes();
+                                for (int i2 = 0; i2 < worldTypes.length(); i2++) {
+                                    JSONObject worldType = worldTypes.getJSONObject(i2);
+                                    String worldTyp = worldType.getString("name");
+                                    boolean defaultworldtyp = worldType.getBoolean("default");
+                                    if (defaultworldtyp) {
+                                        if (isInt(args[1])) {
+                                            builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), TaskName, worldTyp);
+                                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else if (args.length == 3) {
@@ -138,7 +149,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     // add function to remove other team
                     String ownteamname3 = builderSystem.getTeamNameByMember(playerUUID).getString("name");
                     if (args.length == 2) {
-                        
+
                     }
                     if (ownteamname3 != null) {
                         if (!(ownteamname3.equalsIgnoreCase(args[1]))) {
@@ -156,7 +167,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                     if (args[3].toLowerCase(Locale.ROOT) == Bukkit.getOfflinePlayer(args[1]).getName().toLowerCase(Locale.ROOT)) {
                         if (isInt(args[2])) {
-                            builderSystem.removeUserFromWorld(playerUUID,args[3], Integer.parseInt(args[2]));
+                            builderSystem.removeUserFromWorld(playerUUID, args[3], Integer.parseInt(args[2]));
                             player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.remove_succses", playerUUID));
                         }
                     }
@@ -229,17 +240,17 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                         }
 
-                            player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
-
-                        }
-                        break;
+                        player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
 
                     }
-
+                    break;
 
             }
-            return false;
+
+
         }
+        return false;
+    }
 
 
     @Override
@@ -286,11 +297,11 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                         }
                         return createname;
-                        }
-                    break;
                     }
-
+                    break;
             }
+
+        }
 
 
         return null;
