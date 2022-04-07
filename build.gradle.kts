@@ -1,7 +1,6 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    java
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
@@ -88,12 +87,9 @@ repositories {
         implementation("net.gigaclub:buildersystemapi:14.0.1.0.7")
         implementation("net.gigaclub:translationapi:14.0.1.0.5")
         compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
-        compileOnly("net.wesjd:anvilgui:1.5.3-SNAPSHOT")
-    }
-
-    dependencies {
         api("net.wesjd:anvilgui:1.5.3-SNAPSHOT")
     }
+
 
     java {
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -107,15 +103,6 @@ repositories {
                 val tokens = mapOf("version" to version)
                 filter(ReplaceTokens::class, mapOf("tokens" to tokens))
                 duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            }
-        }
-
-
-
-        shadowJar {
-            dependencies {
-                exclude(dependency("net.wesjd:anvilgui:1.5.3-SNAPSHOT"))
-
             }
         }
 
