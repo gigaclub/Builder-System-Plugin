@@ -174,9 +174,8 @@ public class joinlistener implements Listener {
 
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
-        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(false).addIdentifier("Gui_Opener").build();
         Player player = (Player) event.getPlayer();
-        player.sendMessage("Willkommen");
         if (player.getInventory().getItem(0) == null) {
             player.getInventory().setItem(0, GuiOpener);
         } else return;

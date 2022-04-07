@@ -3,7 +3,7 @@ package net.gigaclub.buildersystemplugin;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import net.gigaclub.buildersystem.BuilderSystem;
 
-import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.Navigator;
+import net.gigaclub.buildersystemplugin.Andere.Guis.Navigator;
 import net.gigaclub.buildersystemplugin.Commands.Tasks;
 import net.gigaclub.buildersystemplugin.Commands.Team;
 import net.gigaclub.buildersystemplugin.Commands.Worlds;
