@@ -83,26 +83,27 @@ public class Navigator implements Listener {
 
         ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Main Menu")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         int size = 9 * 3;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString() + "Team Gui"));
+        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.RED.toString() + "Team Gui"));
         for (int i = 0; i < size; i++) {
             inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
         }
+        try {
+            JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+            String teamname = team.getString("name");
 
-
-
-        JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
-        String team_name = team.getString("name");
-
-        //Kein Team
-        if (Objects.equals(team.getString("name"), "false")) {
+        } catch (Exception e){
             inventory.setItem(11, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("Team_Create").setDisplayName(ChatColor.GRAY.toString() + "Team Create").setGlow(true).build());
             inventory.setItem(15, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY.toString() + "Invites List").build());
             inventory.setItem(size - 1, backtoMain);
-        }else
+            player.openInventory(inventory);
+            return;
+        }
+
+        JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
 
         //User mit Team
-        if (Objects.equals(team.getString("name"), "true"))    {
-            inventory.setItem(11, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY.toString() + "Invites List").build());
+        if(team.length()>= 0){
+            inventory.setItem(10, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY.toString() + "Invites List").build());
             inventory.setItem(13, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("list_projecks").setDisplayName(ChatColor.GRAY.toString()+ "Projeckt List").build());
             inventory.setItem(16, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("team_manager").setDisplayName(ChatColor.GRAY.toString()+ "Team Manager").build());
             inventory.setItem(size - 1, backtoMain);
@@ -195,26 +196,49 @@ public class Navigator implements Listener {
              anvilgui = new AnvilGUI.Builder()
                 .onClose(this::TeamGui
                 ).onComplete(((player1, output) -> {
-                    if (output == null) {
-                        player1.sendMessage("Geben sie eine Namen ein");
+                    if (Objects.equals(output, " ") || Objects.equals(output, "Dein Team Heist") || Objects.equals(output, "D") || Objects.equals(output, "")) {
+                        player.sendMessage("Geben sie eine Namen ein");
                         TeamGui(player);
 
                     }else {
-                        player1.sendMessage("team Name: " + TeamName);
-                        TeamName = output;
-                        TeamGui(player);
+
+
+                        player1.sendMessage("Team Name: " + output);
+                        TeamCreateDesc(player,output);
                     }
-                    return null;
+                    return AnvilGUI.Response.close();
                 }))
                 .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Name").build())
-                .itemRight(new ItemBuilder(Material.PAPER).setDisplayName("Team Name").build())
-                .title(ChatColor.RED.toString() + "Team Name").plugin(Main.getPlugin()).text("Wie S0ll dein Team heisen").open(player);
+
+                .title(ChatColor.GREEN.toString() + "Team Name(PflichtFeld)").plugin(Main.getPlugin()).text("Dein Team Heist").open(player);
     }
 
-    public void TeamCreateDesc(Player player){
+    public void TeamCreateDesc(Player player,String teamName){
+        String playerUUID = player.getUniqueId().toString();
+        anvilgui = new AnvilGUI.Builder()
+                .onClose(this::TeamGui
+                ).onComplete(((player1, output) -> {
+                    if (Objects.equals(output, " ") || Objects.equals(output, "Beschreibung") || Objects.equals(output, "B")) {
+                        builderSystem.createTeam(playerUUID,teamName);
+                        player.sendMessage("Team Erstellt ohne Desc");
+                        TeamGui(player);
 
 
+                    }else {
+
+                        player.sendMessage("Team Beschreibung: " + output);
+                        builderSystem.createTeam(playerUUID,teamName,output);
+                        player.sendMessage("Team Erstellt Mit Desc");
+                        TeamGui(player);
+                    }
+                    return AnvilGUI.Response.close();
+                }))
+                .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Bescheigung").build())
+
+                .title(ChatColor.GREEN.toString() + "Team Bescheigung").plugin(Main.getPlugin()).text("Beschreibung").open(player);
     }
+
+
 
 
     @EventHandler
@@ -241,9 +265,7 @@ public class Navigator implements Listener {
                 case "World_Opener" -> WorldGui(player);
                 case "Gui_Opener" -> mainGui(player);
                 case "invite_list_Opener" -> TeamInvite(player);
-                case "Team_Create" -> {
-                    TeamCreatename(player);
-                    player.sendMessage("team create");
+                case "Team_Create" -> {TeamCreatename(player);
                     break;
                 }
 

@@ -71,7 +71,6 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new joinlistener(), this);
         pluginManager.registerEvents(new Navigator(), this);
 
-
     }
 
 

@@ -116,10 +116,15 @@ public class joinlistener implements Listener {
                 }
             }
 
-            JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
-            if (Objects.equals(team.getString("name"), "false")) {
+
+            try {
+                JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+
+            } catch (Exception e){
                 return;
             }
+            JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+
 
             String team_name = team.getString("name");
 

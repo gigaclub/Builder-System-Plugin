@@ -87,7 +87,7 @@ repositories {
         implementation("net.gigaclub:buildersystemapi:14.0.1.0.7")
         implementation("net.gigaclub:translationapi:14.0.1.0.5")
         compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
-        api("net.wesjd:anvilgui:1.5.3-SNAPSHOT")
+        implementation("net.wesjd:anvilgui:1.5.3-SNAPSHOT")
     }
 
 
@@ -95,6 +95,8 @@ repositories {
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
     }
+
+
 
     tasks {
         // If you open resources/plugins.yml you will see "@version@" as the version this code replaces this

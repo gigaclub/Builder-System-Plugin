@@ -39,7 +39,6 @@ public class Worlds implements CommandExecutor, TabCompleter {
                 case "createasteam":
                     String ownteamname = builderSystem.getTeamNameByMember(playerUUID).getString("name");
 
-                    getLogger().info("teamname: " + ownteamname);
                     if (args.length == 2) {
                         JSONArray allTasks = builderSystem.getAllTasks();
                         for (int i = 0; i < allTasks.length(); i++) {
