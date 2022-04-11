@@ -239,7 +239,7 @@ public class Navigator implements Listener {
         JSONArray tasks = builderSystem.getAllTasks();
         Integer taskCont = tasks.length();
 
-        ItemStack backtoTeam = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Team Menu")).setLore((ChatColor.AQUA.toString() + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
+        ItemStack backtoTeam = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Task Menu")).setLore((ChatColor.AQUA.toString() + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
         int size = 9 * 6;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString() + "Task List"));
         for (int i = 0; i <= 8; i++) {
