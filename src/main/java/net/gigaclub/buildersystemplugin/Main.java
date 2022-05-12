@@ -9,13 +9,16 @@ import net.gigaclub.buildersystemplugin.Commands.Team;
 import net.gigaclub.buildersystemplugin.Commands.Worlds;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
+import net.gigaclub.buildersystemplugin.cache.TaskCache;
 import net.gigaclub.buildersystemplugin.listener.joinlistener;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Arrays;
@@ -27,6 +30,7 @@ public final class Main extends JavaPlugin {
     private static Translation translation;
     final public static String PREFIX = "[GC-BSP]: ";
     private static BuilderSystem builderSystem;
+    private static TaskCache taskCache;
 
 
     @Override
@@ -64,12 +68,23 @@ public final class Main extends JavaPlugin {
                 config.getString("Odoo.Username"),
                 config.getString("Odoo.Password")
         ));
+        setTaskCache(new TaskCache());
 
         registerTranslations();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new joinlistener(), this);
         pluginManager.registerEvents(new Navigator(), this);
+        getTaskCache().invalidateCache();
+        getTaskCache().invalidateInventoryCache();
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            public void run() {
+                getTaskCache().invalidateCache();
+                getTaskCache().invalidateInventoryCache();
+                System.out.print("load");
+            }
+        }, 0, 1200);
 
     }
 
@@ -86,6 +101,9 @@ public final class Main extends JavaPlugin {
     public static void setTranslation(Translation translation) {
         Main.translation = translation;
     }
+    public static void setTaskCache(TaskCache taskCache) {
+        Main.taskCache = taskCache;
+    }
 
     private void setConfig() {
         Config.createConfig();
@@ -96,7 +114,7 @@ public final class Main extends JavaPlugin {
         getLogger().info(PREFIX + "Config files set.");
     }
 
-    public static Main getPlugin() {
+    public static @NotNull Plugin getPlugin() {
         return plugin;
     }
 
@@ -107,6 +125,10 @@ public final class Main extends JavaPlugin {
 
     public static BuilderSystem getBuilderSystem() {
         return Main.builderSystem;
+    }
+
+    public static TaskCache getTaskCache() {
+        return Main.taskCache;
     }
 
     public static void setBuilderSystem(BuilderSystem builderSystem) {

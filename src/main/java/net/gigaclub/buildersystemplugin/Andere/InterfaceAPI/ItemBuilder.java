@@ -144,6 +144,21 @@ public class ItemBuilder {
         setItemMeta(meta);
         return this;
     }
+    public ItemBuilder addID(int metadata) {
+        ItemMeta meta = getItemMeta();
+        PersistentDataContainer data = meta.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getPlugin(), "ID"), PersistentDataType.INTEGER, metadata);
+        setItemMeta(meta);
+        return this;
+    }
+
+    public ItemBuilder addIndex(int metadata) {
+        ItemMeta meta = getItemMeta();
+        PersistentDataContainer data = meta.getPersistentDataContainer();
+        data.set(new NamespacedKey(Main.getPlugin(), "index"), PersistentDataType.INTEGER, metadata);
+        setItemMeta(meta);
+        return this;
+    }
 
     public ItemBuilder setGui(Boolean is_Gui) {
         ItemMeta meta = getItemMeta();
