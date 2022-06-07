@@ -147,7 +147,7 @@ public class ItemBuilder {
     public ItemBuilder addID(int metadata) {
         ItemMeta meta = getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(new NamespacedKey(Main.getPlugin(), "ID"), PersistentDataType.INTEGER, metadata);
+        data.set(new NamespacedKey(Main.getPlugin(), "id"), PersistentDataType.INTEGER, metadata);
         setItemMeta(meta);
         return this;
     }
@@ -171,6 +171,7 @@ public class ItemBuilder {
         }
         return this;
     }
+
 
     public ItemStack build() {
         return stack;

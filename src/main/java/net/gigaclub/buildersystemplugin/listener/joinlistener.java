@@ -164,7 +164,7 @@ public class joinlistener implements Listener {
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
-                .templates(new ServiceTemplate("Builder", worlds_typ, "local"))
+                .templates(new ServiceTemplate("Builder", worlds_typ, "local"),new ServiceTemplate("Builder","Plugins","local"))
                 .groups("Builder")
                 .maxHeapMemory(1525)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
@@ -179,13 +179,14 @@ public class joinlistener implements Listener {
 
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
-        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(false).addIdentifier("Gui_Opener").build();
+        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         Player player = (Player) event.getPlayer();
             player.getInventory().clear();
             player.getInventory().setItem(0, GuiOpener);
 
 
     }
+
 
 
 }

@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class TaskCache {
 
@@ -68,7 +67,7 @@ public class TaskCache {
 
             if (index > 1){
                 System.out.println(index);
-                inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+String.valueOf(index-1)).setGui(true).addIdentifier("task_l").addIndex(index-1).setAmount(index - 1).build());
+                inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index - 1)).setGui(true).addIdentifier("task_l").addIndex(index-1).setAmount(index - 1).build());
             }
 
             int itask = 0;
@@ -82,7 +81,7 @@ public class TaskCache {
                     taskinv = 0;
                     break;
                 } else if (cont == 44) {
-                    inventory.setItem(51, new ItemBuilder(Material.ARROW).setDisplayName("seite "+String.valueOf(index+1)).setGui(true).addIdentifier("task_l").addIndex(index+1).setAmount(index +1).build());
+                    inventory.setItem(51, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index + 1)).setGui(true).addIdentifier("task_l").addIndex(index+1).setAmount(index +1).build());
                     taskinv++;
                     break;
                 } else if (cont >= 10 && cont <= 16 || cont >= 19 && cont <= 25 || cont >= 28 && cont <= 34 || cont >= 37 && cont <= 43) {
@@ -122,13 +121,13 @@ public class TaskCache {
 
 
         if(worlds.length() <= 1 ){
-            inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + task.getString("name")).addID(task.getInt("id")).setGui(true).setLore(tasklore).build());
+            inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + task.getString("name")).addID(task.getInt("id")).addIdentifier("task").setGui(true).setLore(tasklore).build());
         }else
         if(worlds.length() >= 2 && worlds.length() <= 7){
-            inventory.setItem(i, new ItemBuilder(Material.ORANGE_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GOLD + task.getString("name")).addID(task.getInt("id")).setGui(true).setLore(tasklore).build());
+            inventory.setItem(i, new ItemBuilder(Material.ORANGE_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GOLD + task.getString("name")).addID(task.getInt("id")).addIdentifier("task").setGui(true).setLore(tasklore).build());
         }else
         if(worlds.length() >= 8){
-            inventory.setItem(i, new ItemBuilder(Material.RED_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.DARK_RED + task.getString("name")).addID(task.getInt("id")).setGui(true).setLore(tasklore).build());
+            inventory.setItem(i, new ItemBuilder(Material.RED_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.DARK_RED + task.getString("name")).addID(task.getInt("id")).addIdentifier("task").setGui(true).setLore(tasklore).build());
         }
 
     }

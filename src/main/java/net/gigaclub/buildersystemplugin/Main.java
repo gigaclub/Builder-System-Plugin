@@ -10,6 +10,7 @@ import net.gigaclub.buildersystemplugin.Commands.Worlds;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
 import net.gigaclub.buildersystemplugin.cache.TaskCache;
+import net.gigaclub.buildersystemplugin.cache.WorldCache;
 import net.gigaclub.buildersystemplugin.listener.joinlistener;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
@@ -19,6 +20,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ public final class Main extends JavaPlugin {
     final public static String PREFIX = "[GC-BSP]: ";
     private static BuilderSystem builderSystem;
     private static TaskCache taskCache;
+    private static WorldCache WorldCache;
 
 
     @Override
@@ -78,13 +82,32 @@ public final class Main extends JavaPlugin {
         getTaskCache().invalidateCache();
         getTaskCache().invalidateInventoryCache();
 
+
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
                 getTaskCache().invalidateCache();
                 getTaskCache().invalidateInventoryCache();
+
+                try {
+                    JSONArray task = builderSystem.getAllWorlds();
+                } catch (Exception e) {
+                    return;
+                }
+                getWorldCache().invalidateCache();
+                getWorldCache().invalidateInventoryCache();
                 System.out.print("load");
             }
         }, 0, 1200);
+
+        try {
+            JSONArray task = builderSystem.getAllWorlds();
+        } catch (Exception e) {
+            return;
+        }
+        setWorldCache(new WorldCache());
+
+        getWorldCache().invalidateCache();
+        getWorldCache().invalidateInventoryCache();
 
     }
 
@@ -103,6 +126,14 @@ public final class Main extends JavaPlugin {
     }
     public static void setTaskCache(TaskCache taskCache) {
         Main.taskCache = taskCache;
+    }
+    public static void setWorldCache(WorldCache WorldCache) {
+        try {
+            JSONArray task = builderSystem.getAllWorlds();
+        } catch (Exception e) {
+            return;
+        }
+        Main.WorldCache = WorldCache;
     }
 
     private void setConfig() {
@@ -130,7 +161,9 @@ public final class Main extends JavaPlugin {
     public static TaskCache getTaskCache() {
         return Main.taskCache;
     }
-
+    public static WorldCache getWorldCache() {
+        return Main.WorldCache;
+    }
     public static void setBuilderSystem(BuilderSystem builderSystem) {
         Main.builderSystem = builderSystem;
     }

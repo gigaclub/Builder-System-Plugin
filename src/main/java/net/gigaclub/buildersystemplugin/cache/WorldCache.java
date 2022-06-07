@@ -1,11 +1,9 @@
-package net.gigaclub.buildersystemplugin.Andere.Guis;
+package net.gigaclub.buildersystemplugin.cache;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
-import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.guiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Main;
-import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,56 +15,38 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class WorldGui {
+public class WorldCache {
 
-
-    HeadDatabaseAPI api = new HeadDatabaseAPI();
-    Translation t = Main.getTranslation();
+    public JSONArray worldCache;
+    public ArrayList<Inventory> inventories;
 
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
-    public ArrayList<String> WorldloreList() {
-        ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD.toString() + "-----------------");
-        loreList.add(ChatColor.GOLD.toString() + "Open Project Menu");
-        loreList.add(ChatColor.GOLD.toString() + "-----------------");
-        return loreList;
+
+
+
+    public WorldCache() {
+        this.worldCache = new JSONArray();
+        this.inventories = new ArrayList<>();
     }
 
-    public void WorldGui(Player player) {
-        ItemStack backtoMain = new ItemBuilder(this.api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Main Menu")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
-
-        ItemStack WorldListAll = new ItemBuilder(Material.PAPER).setGui(true).setDisplayName((ChatColor.RED.toString() + "World List all")).setLore((ChatColor.AQUA.toString() + "Open The Complet World List")).addIdentifier("WorldlistAll").build();
-        ItemStack WorldListUser = new ItemBuilder(Material.PAPER).setGui(true).setDisplayName((ChatColor.RED.toString() + "World List des Userers")).setLore((ChatColor.AQUA.toString() + "Open The World List of the user")).addIdentifier("WorldlistUser").build();
-
-        int size = 9 * 6;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString() + "Projeckt Gui"));
-
-
-
-        inventory.setItem(size - 1, backtoMain);
-        player.openInventory(inventory);
+    public void invalidateCache() {
+        this.worldCache = this.builderSystem.getAllWorlds();
     }
 
-    public void WorldListAll(Player player, int index) {
-        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Task Menu")).setLore((ChatColor.AQUA.toString() + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
-        Inventory inventory = Main.getWorldCache().getInventory(index);
-        int size = 9 * 6;
-        inventory.setItem(size - 1, backtoTask);
-        player.openInventory(inventory);
+    public Inventory getInventory(int index) {
+        return inventories.get(index);
     }
 
-    public  void WorldListUser(Player player,int index) {
+    public void invalidateInventoryCache() {
+        this.inventories = new ArrayList<>();
         JSONArray worlds = Main.getWorldCache().worldCache;
         HeadDatabaseAPI api = new HeadDatabaseAPI();
-
-        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Task Menu")).setLore((ChatColor.AQUA.toString() + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
-
 
 
         Integer taskCont = worlds.length();
         int fullCount = 0;
-        int index1 = 1;
+        int index = 1;
         int taskinv = 0;
         int size = 9 * 6;
 
@@ -89,48 +69,37 @@ public class WorldGui {
             inventory.setItem(35, p);
             inventory.setItem(44, p);
 
-            if (index1 > 1){
-                inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index1 - 1)).setGui(true).addIdentifier("task_l").addIndex(index1-1).setAmount(index1 - 1).build());
+            if (index > 1){
+                inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index - 1)).setGui(true).addIdentifier("world_l").addIndex(index-1).setAmount(index - 1).build());
             }
 
             int iworld = 0;
-            if (index1 > 1) {
+            if (index > 1) {
                 iworld = taskinv * 28;
             }
             int cont = 0;
 
             while (true) {
                 if (iworld > taskCont) {
-                    if (taskinv ==1){
-                        player.openInventory(inventory);
-                    }
                     taskinv = 0;
                     break;
                 } else if (cont == 44) {
-                    inventory.setItem(51, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index1 + 1)).setGui(true).addIdentifier("task_l").addIndex(index1+1).setAmount(index1 +1).build());
-                    if (taskinv ==1){
-                        player.openInventory(inventory);
-                    }
+                    inventory.setItem(51, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index + 1)).setGui(true).addIdentifier("world_l").addIndex(index+1).setAmount(index +1).build());
                     taskinv++;
                     break;
                 } else if (cont >= 10 && cont <= 16 || cont >= 19 && cont <= 25 || cont >= 28 && cont <= 34 || cont >= 37 && cont <= 43) {
-                    worldInfoUser(iworld, inventory, cont, worlds);
+                    worldinfo(iworld, inventory, cont, worlds);
                     iworld++;
                     fullCount++;
-                    if (cont == 43 && taskinv ==1){
-                        player.openInventory(inventory);
-                    }
-
                 }
                 cont++;
             }
-            index1++;
+            index++;
 
         }
-
     }
 
-    public void worldInfoUser(int iworld, Inventory inventory, int i, JSONArray worlds) {
+    public void worldinfo(int iworld, Inventory inventory, int i, JSONArray worlds) {
 
         try {
             JSONObject world = worlds.getJSONObject(iworld);
@@ -145,7 +114,7 @@ public class WorldGui {
         ArrayList<String> worldlore = new ArrayList<>();
         worldlore.add(ChatColor.GRAY + "ID: " + ChatColor.WHITE + world.getInt("world_id"));
 
-        worldlore.add(ChatColor.GRAY + "builder_team.world.list.name" + " " + ChatColor.WHITE + world.getString("name"));
+            worldlore.add(ChatColor.GRAY + "builder_team.world.list.name" + " " + ChatColor.WHITE + world.getString("name"));
         worldlore.add(ChatColor.GRAY + "builder_team.world.list.world_type" + " " + ChatColor.WHITE + world.getString("world_type"));
         worldlore.add(ChatColor.WHITE + " " );
         worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_teams" );
@@ -184,9 +153,11 @@ public class WorldGui {
             worldlore.add(ChatColor.WHITE + res1.toString());
 
         }
-        inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).addID(world.getInt("id")).addIdentifier("world").setGui(true).setLore(worldlore).build());
+            inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).addID(world.getInt("id")).addIdentifier("world").setGui(true).setLore(worldlore).build());
 
     }
+
+
 
 
 }

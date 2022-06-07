@@ -63,6 +63,8 @@ public class Tasks implements CommandExecutor, TabCompleter {
                                 builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                                 player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", playerUUID));
                             }
+                            Main.getTaskCache().invalidateCache();
+                            Main.getTaskCache().invalidateInventoryCache();
 
                         }
                         break;
@@ -71,13 +73,15 @@ public class Tasks implements CommandExecutor, TabCompleter {
                             player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
                             return false;
                         }
-                        if (player.hasPermission("builderteam.admin")) {
+                        if (player.hasPermission("gigaclub_builder_system.remove_task")) {
                             if (args.length == 2) {
                                 if (isInt(args[1])) {
 
                                     int i = Integer.parseInt(args[1]);
                                     builderSystem.removeTask(i);
                                     player.sendMessage(t.t("builder_team.task.remove_succses", playerUUID));
+                                    Main.getTaskCache().invalidateCache();
+                                    Main.getTaskCache().invalidateInventoryCache();
 
                                 } else player.sendMessage(t.t("builder_team.wrong_arguments", playerUUID));
                             }
