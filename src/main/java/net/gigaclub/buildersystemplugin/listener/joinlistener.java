@@ -56,7 +56,7 @@ public class joinlistener implements Listener {
                         ICloudPlayer entry = cloudPlayers.get(0);
                         IPlayerManager playerManager = this.playerManager;
                         int serviceId1 = this.serviceId;
-                        Player player2 = (Player) player;
+                        Player player2 = player;
                         @NotNull BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
                         taskID = scheduler.runTaskTimer(Main.getPlugin(), new Runnable() {
                             int countdown = 10;
@@ -118,26 +118,28 @@ public class joinlistener implements Listener {
 
 
             try {
-                JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+                JSONArray team = builderSystem.getTeamsByMember(playerUUID);
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 return;
             }
-            JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+            JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
 
+ /*           for (int j = 0; j < teams.length(); j++) {
+                JSONArray teamworlds = teams.getJSONArray(j);
+                JSONArray team = teamworlds.getJSONArray()
 
-            String team_name = team.getString("name");
-
-            JSONArray teamWorlds = team.getJSONArray("world_ids");
-            JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
-            for (int i = 0; i < teamWorlds.length(); i++) {
-                startServer(teamWorlds, i, builderSystem, playerUUID, team_name, t, player);
-            }
-            for (int i = 0; i < teamWorldManagers.length(); i++) {
-                startServer(teamWorldManagers, i, builderSystem, playerUUID, team_name, t, player);
-            }
+                JSONArray teamWorlds = worldid.getJSONObject("world_ids");
+                JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
+                for (int i = 0; i < teamWorlds.length(); i++) {
+                    startServer(teamWorlds, i, builderSystem, playerUUID, j, t, player);
+                }
+                for (int i = 0; i < teamWorldManagers.length(); i++) {
+                    startServer(teamWorldManagers, i, builderSystem, playerUUID, j, t, player);
+                }*/
         }
-    }
+        }
+
 
     private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {
         JSONObject world_data = teamWorlds.getJSONObject(i);
@@ -179,10 +181,10 @@ public class joinlistener implements Listener {
 
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
-        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE.toString() + "BuilderGui")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
-        Player player = (Player) event.getPlayer();
-            player.getInventory().clear();
-            player.getInventory().setItem(0, GuiOpener);
+        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+        Player player = event.getPlayer();
+        player.getInventory().clear();
+        player.getInventory().setItem(0, GuiOpener);
 
 
     }

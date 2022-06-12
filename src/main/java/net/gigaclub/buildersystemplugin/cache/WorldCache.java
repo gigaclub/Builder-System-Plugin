@@ -23,22 +23,32 @@ public class WorldCache {
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
-
-
     public WorldCache() {
+        this.check_is_world();
         this.worldCache = new JSONArray();
         this.inventories = new ArrayList<>();
     }
 
+    private void check_is_world() {
+        try {
+            JSONArray task = builderSystem.getAllWorlds();
+        } catch (Exception e) {
+            return;
+        }
+    }
+
     public void invalidateCache() {
+        this.check_is_world();
         this.worldCache = this.builderSystem.getAllWorlds();
     }
 
     public Inventory getInventory(int index) {
+        this.check_is_world();
         return inventories.get(index);
     }
 
     public void invalidateInventoryCache() {
+        this.check_is_world();
         this.inventories = new ArrayList<>();
         JSONArray worlds = Main.getWorldCache().worldCache;
         HeadDatabaseAPI api = new HeadDatabaseAPI();
@@ -52,7 +62,7 @@ public class WorldCache {
 
         while (fullCount < taskCont) {
 
-            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString() + "Task List"));
+            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Task List"));
             ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
             for (int i = 0; i <= 8; i++) {
                 inventory.setItem(i, p);
@@ -100,7 +110,7 @@ public class WorldCache {
     }
 
     public void worldinfo(int iworld, Inventory inventory, int i, JSONArray worlds) {
-
+        this.check_is_world();
         try {
             JSONObject world = worlds.getJSONObject(iworld);
         } catch (Exception e) {

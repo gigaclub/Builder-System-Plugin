@@ -21,8 +21,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-import java.lang.constant.Constable;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -38,21 +36,28 @@ public class TaskGui implements Listener {
     String WorldTypeselectet;
     ItemStack ON = new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.GREEN + "ON").build();
     ItemStack OFF = new ItemBuilder(Material.RED_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.RED + "OFF").build();
+    ItemStack on;
+    ItemStack off;
+
+    public TaskGui() {
+        this.on = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.GREEN + "Activate")).setLore("").setGui(true).addIdentifier("on").build();
+        this.off = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Deactivate")).setLore("").setGui(true).addIdentifier("off").build();
+    }
 
     public ArrayList<String> TaskloreList() {
         ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD.toString() + "--------------");
-        loreList.add(ChatColor.GOLD.toString() + "Open Task List");
-        loreList.add(ChatColor.GOLD.toString() + "get your  Task");
-        loreList.add(ChatColor.GOLD.toString() + "--------------");
+        loreList.add(ChatColor.GOLD + "--------------");
+        loreList.add(ChatColor.GOLD + "Open Task List");
+        loreList.add(ChatColor.GOLD + "get your  Task");
+        loreList.add(ChatColor.GOLD + "--------------");
         return loreList;
     }
 
     public void TaskGui(Player player) {
         HeadDatabaseAPI api = new HeadDatabaseAPI();
-        ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Main Menu")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+        ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         int size = 9 * 5;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString() + "Task Gui"));
+        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Task Gui"));
         for (int i = 0; i < size; i++) {
             inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
         }
@@ -62,7 +67,7 @@ public class TaskGui implements Listener {
     }
 
     public void TaskList(Player player, int index) {
-        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Task Menu")).setLore((ChatColor.AQUA.toString() + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
+        ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Task Menu")).setLore((ChatColor.AQUA + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
         Inventory inventory = Main.getTaskCache().getInventory(index);
         int size = 9 * 6;
         inventory.setItem(size - 1, backtoTask);
@@ -71,26 +76,23 @@ public class TaskGui implements Listener {
 
     public ArrayList<String> createAsTeamlore() {
         ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD.toString() + "Create Projeckt as Team");
+        loreList.add(ChatColor.GOLD + "Create Projeckt as Team");
         return loreList;
     }
 
     public ArrayList<String> createAsUserlore() {
         ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD.toString() + "Create Projeckt as User");
+        loreList.add(ChatColor.GOLD + "Create Projeckt as User");
         return loreList;
     }
 
     public void TaskSelect(Player player, int taskid) {
         int size = 9 * 1;
         Inventory inventory = Bukkit.createInventory(null, size, ("Create a Projeckt"));
-        inventory.setItem(2, new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED.toString() + "Create as Team")).setLore(createAsTeamlore()).setGui(true).addIdentifier("createProjecktasTeam").addID(taskid).build());
+        inventory.setItem(2, new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Create as Team")).setLore(createAsTeamlore()).setGui(true).addIdentifier("createProjecktasTeam").addID(taskid).build());
         inventory.setItem(6, new ItemBuilder(Material.PLAYER_HEAD).setHead(player.getDisplayName()).setDisplayName("Create as User").setLore(createAsUserlore()).setGui(true).addIdentifier("createProjecktasUser").addID(taskid).build());
 
     }
-
-    ItemStack on = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.GREEN.toString() + "Activate")).setLore("").setGui(true).addIdentifier("on").build();
-    ItemStack off = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED.toString() + "Deactivate")).setLore("").setGui(true).addIdentifier("off").build();
     public void WorldtypSelect(Player player) {
         worldTypSelectoractiv = true;
         int size = 9 * 4;
@@ -103,7 +105,7 @@ public class TaskGui implements Listener {
             worldType.getString("name");
             int slot = i+10;
             if(slot < 15||slot>18||slot<24)
-            inventory.setItem(slot,new ItemBuilder(Material.PAPER).setDisplayName((ChatColor.RED.toString() + worldType.getString("name"))).setLore("Select "+worldType.getString("name")).setGui(true).addIdentifier(worldType.getString("name")).build());
+                inventory.setItem(slot, new ItemBuilder(Material.PAPER).setDisplayName((ChatColor.RED + worldType.getString("name"))).setLore("Select " + worldType.getString("name")).setGui(true).addIdentifier(worldType.getString("name")).build());
 
 
             }

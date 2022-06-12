@@ -67,6 +67,7 @@ repositories {
             }
         }
 
+
         maven {
             name = "releases"
             url = uri("https://repo.cloudnetservice.eu/repository/releases/")
@@ -81,13 +82,14 @@ repositories {
         annotationProcessor("org.jetbrains:annotations:23.0.0")
         compileOnly("org.projectlombok:lombok:1.18.22")
         annotationProcessor("org.projectlombok:lombok:1.18.22")
-        implementation("net.gigaclub:translationapi:14.0.1.0.1")
         implementation("de.dytanic.cloudnet:cloudnet-bridge:3.4.3-RELEASE")
         implementation("de.dytanic.cloudnet:cloudnet-driver:3.4.3-RELEASE")
-        implementation("net.gigaclub:buildersystemapi:14.0.1.0.7")
+
+        implementation("net.gigaclub:buildersystemapi:14.0.1.0.9")
         implementation("net.gigaclub:translationapi:14.0.1.0.5")
         compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
         implementation("net.wesjd:anvilgui:1.5.3-SNAPSHOT")
+
     }
 
 

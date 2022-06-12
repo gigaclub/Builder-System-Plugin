@@ -111,6 +111,6 @@ buildNumber.properties
 
 # Common working directory
 run/
-gradle.properties
+../Permission-System-Plugin/gradle.properties
 build/
 .gradle/

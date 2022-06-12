@@ -1,11 +1,10 @@
 package net.gigaclub.buildersystemplugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
+import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import net.gigaclub.buildersystem.BuilderSystem;
-
 import net.gigaclub.buildersystemplugin.Andere.Guis.Navigator;
 import net.gigaclub.buildersystemplugin.Commands.Tasks;
-import net.gigaclub.buildersystemplugin.Commands.Team;
 import net.gigaclub.buildersystemplugin.Commands.Worlds;
 import net.gigaclub.buildersystemplugin.Config.Config;
 import net.gigaclub.buildersystemplugin.Config.ConfigTeams;
@@ -16,99 +15,28 @@ import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
 
 
-public final class Main extends JavaPlugin {
+public final class Main extends JavaPlugin implements Listener {
 
     private static Main plugin;
     private static Translation translation;
     final public static String PREFIX = "[GC-BSP]: ";
     private static BuilderSystem builderSystem;
     private static TaskCache taskCache;
-    private static WorldCache WorldCache;
+    private static WorldCache worldCache;
 
-
-    @Override
-    public void onEnable() {
-        plugin = this;
-        setPlugin(this);
-
-        setConfig();
-
-        getCommand("gcteams").setExecutor(new Team(plugin));
-        getCommand("gcteams").setTabCompleter(new Team(plugin));
-
-        getCommand("gctask").setExecutor(new Tasks());
-        getCommand("gctask").setTabCompleter(new Tasks());
-
-        Worlds projeckt = new Worlds();
-        getCommand("gcprojekt").setExecutor(projeckt);
-        getCommand("gcprojekt").setTabCompleter(projeckt);
-
-
-        File file = new File("plugins//" + "Odoo", "config.yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-        CloudNetDriver.getInstance().getEventManager().registerListener(projeckt);
-        setTranslation(new Translation(
-                config.getString("Odoo.Host"),
-                config.getString("Odoo.Database"),
-                config.getString("Odoo.Username"),
-                config.getString("Odoo.Password")
-        ));
-        translation.setCategory("builderSystem");
-        setBuilderSystem(new BuilderSystem(
-                config.getString("Odoo.Host"),
-                config.getString("Odoo.Database"),
-                config.getString("Odoo.Username"),
-                config.getString("Odoo.Password")
-        ));
-        setTaskCache(new TaskCache());
-
-        registerTranslations();
-
-        PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new joinlistener(), this);
-        pluginManager.registerEvents(new Navigator(), this);
-        getTaskCache().invalidateCache();
-        getTaskCache().invalidateInventoryCache();
-
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            public void run() {
-                getTaskCache().invalidateCache();
-                getTaskCache().invalidateInventoryCache();
-
-                try {
-                    JSONArray task = builderSystem.getAllWorlds();
-                } catch (Exception e) {
-                    return;
-                }
-                getWorldCache().invalidateCache();
-                getWorldCache().invalidateInventoryCache();
-                System.out.print("load");
-            }
-        }, 0, 1200);
-
-        try {
-            JSONArray task = builderSystem.getAllWorlds();
-        } catch (Exception e) {
-            return;
-        }
-        setWorldCache(new WorldCache());
-
-        getWorldCache().invalidateCache();
-        getWorldCache().invalidateInventoryCache();
-
+    public static WorldCache getWorldCache() {
+        return Main.worldCache;
     }
 
 
@@ -124,16 +52,13 @@ public final class Main extends JavaPlugin {
     public static void setTranslation(Translation translation) {
         Main.translation = translation;
     }
+
     public static void setTaskCache(TaskCache taskCache) {
         Main.taskCache = taskCache;
     }
-    public static void setWorldCache(WorldCache WorldCache) {
-        try {
-            JSONArray task = builderSystem.getAllWorlds();
-        } catch (Exception e) {
-            return;
-        }
-        Main.WorldCache = WorldCache;
+
+    public static void setWorldCache(WorldCache worldCache) {
+        Main.worldCache = worldCache;
     }
 
     private void setConfig() {
@@ -160,12 +85,6 @@ public final class Main extends JavaPlugin {
 
     public static TaskCache getTaskCache() {
         return Main.taskCache;
-    }
-    public static WorldCache getWorldCache() {
-        return Main.WorldCache;
-    }
-    public static void setBuilderSystem(BuilderSystem builderSystem) {
-        Main.builderSystem = builderSystem;
     }
 
     public static void registerTranslations() {
@@ -212,6 +131,7 @@ public final class Main extends JavaPlugin {
                 "builder_team.task.list.build_size",
                 "builder_team.task.list.projeckt_count",
                 //Task tab
+
                 "builder_team.task.create.tab_task_name",
                 "builder_team.task.create.tab_task_x_size",
                 "builder_team.task.create.tab_task_y_size",
@@ -231,6 +151,7 @@ public final class Main extends JavaPlugin {
                 "BuilderSystem.world.user_list",
                 //World tab
                 "builder_team.world.tab_world_name",
+                "builder_team.world.tab_team_id",
 
 
                 // countdown
@@ -240,6 +161,76 @@ public final class Main extends JavaPlugin {
 
 
         ));
+    }
+
+    public static void setBuilderSystem(BuilderSystem builderSystem) {
+        Main.builderSystem = builderSystem;
+    }
+
+    @Override
+    public void onEnable() {
+        plugin = this;
+        setPlugin(this);
+
+        setConfig();
+
+        this.getServer().getPluginManager().registerEvents(this, this);
+
+        getCommand("gctask").setExecutor(new Tasks());
+        getCommand("gctask").setTabCompleter(new Tasks());
+
+        Worlds projeckt = new Worlds();
+        getCommand("gcprojekt").setExecutor(projeckt);
+        getCommand("gcprojekt").setTabCompleter(projeckt);
+
+
+        File file = new File("plugins//" + "Odoo", "config.yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+        CloudNetDriver.getInstance().getEventManager().registerListener(projeckt);
+        setTranslation(new Translation(
+                config.getString("Odoo.Host"),
+                config.getString("Odoo.Database"),
+                config.getString("Odoo.Username"),
+                config.getString("Odoo.Password")
+        ));
+        translation.setCategory("builderSystem");
+        setBuilderSystem(new BuilderSystem(
+                config.getString("Odoo.Host"),
+                config.getString("Odoo.Database"),
+                config.getString("Odoo.Username"),
+                config.getString("Odoo.Password")
+        ));
+        setTaskCache(new TaskCache());
+        setWorldCache(new WorldCache());
+
+        registerTranslations();
+
+        getTaskCache().invalidateCache();
+        getTaskCache().invalidateInventoryCache();
+
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            public void run() {
+                getTaskCache().invalidateCache();
+                getTaskCache().invalidateInventoryCache();
+                getWorldCache().invalidateCache();
+                getWorldCache().invalidateInventoryCache();
+                System.out.print("load");
+            }
+        }, 0, 1200);
+
+
+        getWorldCache().invalidateCache();
+        getWorldCache().invalidateInventoryCache();
+
+    }
+
+    @EventHandler
+    public void onDatabaseLoad(DatabaseLoadEvent e) {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new joinlistener(), this);
+        pluginManager.registerEvents(new Navigator(), this);
     }
 
 }

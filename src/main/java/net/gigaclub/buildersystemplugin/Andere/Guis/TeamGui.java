@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ public class TeamGui implements Listener {
     //Lore list für BS_gui
     public ArrayList<String> TeamloreList() {
         ArrayList<String> loreList = new ArrayList<>();
-        loreList.add(ChatColor.GOLD.toString() + "--------------");
-        loreList.add(ChatColor.GOLD.toString() + "Open Team Menu");
-        loreList.add(ChatColor.GOLD.toString() + "--------------");
+        loreList.add(ChatColor.GOLD + "--------------");
+        loreList.add(ChatColor.GOLD + "Open Team Menu");
+        loreList.add(ChatColor.GOLD + "--------------");
         return loreList;
     }
 
@@ -39,31 +40,33 @@ public class TeamGui implements Listener {
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         String playerUUID = player.getUniqueId().toString();
 
-        ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Main Menu")).setLore((ChatColor.AQUA.toString() + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+        ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         int size = 9 * 3;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.RED.toString() + "Team Gui"));
+        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.RED + "Team Gui"));
         for (int i = 0; i < size; i++) {
             inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
         }
         try {
-            JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+            JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
+            JSONObject team = teams.getJSONObject(1);
             String teamname = team.getString("name");
 
         } catch (Exception e) {
-            inventory.setItem(11, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("Team_Create").setDisplayName(ChatColor.GRAY.toString() + "Team Create").setGlow(true).build());
-            inventory.setItem(15, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY.toString() + "Invites List").build());
+            inventory.setItem(11, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("Team_Create").setDisplayName(ChatColor.GRAY + "Team Create").setGlow(true).build());
+            inventory.setItem(15, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY + "Invites List").build());
             inventory.setItem(size - 1, backtoMain);
             player.openInventory(inventory);
             return;
         }
 
-        JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
+        JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
+        JSONObject team = teams.getJSONObject(1);
 
         //User mit Team
         if (team.length() >= 0) {
-            inventory.setItem(16, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY.toString() + "Invites List").build());
-            inventory.setItem(13, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("list_projecks").setDisplayName(ChatColor.GRAY.toString() + "Projeckt List").build());
-            inventory.setItem(10, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("team_manager").setDisplayName(ChatColor.GRAY.toString() + "Team Manager").build());
+            inventory.setItem(16, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("invite_list_Opener").setDisplayName(ChatColor.GRAY + "Invites List").build());
+            inventory.setItem(13, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("list_projecks").setDisplayName(ChatColor.GRAY + "Projeckt List").build());
+            inventory.setItem(10, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("team_manager").setDisplayName(ChatColor.GRAY + "Team Manager").build());
             inventory.setItem(size - 1, backtoMain);
         }
         player.openInventory(inventory);
@@ -80,10 +83,10 @@ public class TeamGui implements Listener {
             return;
         }
 
-        ItemStack backtoTeam = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED.toString() + "To Team Menu")).setLore((ChatColor.AQUA.toString() + "Open The Team Gui")).setGui(true).addIdentifier("Team_Opener").build();
+        ItemStack backtoTeam = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Team Menu")).setLore((ChatColor.AQUA + "Open The Team Gui")).setGui(true).addIdentifier("Team_Opener").build();
         int size = 9 * 6;
-        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD.toString() + "Team Gui"));
-        ItemStack p =new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
+        Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Team Gui"));
+        ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
         for (int i = 0; i <= 8; i++) {
             inventory.setItem(i, p);
         }
@@ -152,7 +155,7 @@ public class TeamGui implements Listener {
                 }))
                 .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Name").build())
 
-                .title(ChatColor.GREEN.toString() + "Team Name(PflichtFeld)").plugin(Main.getPlugin()).text("Dein Team Heist").open(player);
+                .title(ChatColor.GREEN + "Team Name(PflichtFeld)").plugin(Main.getPlugin()).text("Dein Team Heist").open(player);
     }
 
     public void TeamCreateDesc(Player player, String teamName) {
@@ -177,7 +180,7 @@ public class TeamGui implements Listener {
                 }))
                 .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Bescheigung").build())
 
-                .title(ChatColor.GREEN.toString() + "Team Bescheigung").plugin(Main.getPlugin()).text("Beschreibung").open(player);
+                .title(ChatColor.GREEN + "Team Bescheigung").plugin(Main.getPlugin()).text("Beschreibung").open(player);
     }
 
 }

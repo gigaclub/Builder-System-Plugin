@@ -123,13 +123,13 @@ public class Tasks implements CommandExecutor, TabCompleter {
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
-        List<String> teamlistofplayer = new ArrayList<>();
+/*        List<String> teamlistofplayer = new ArrayList<>();
         JSONArray getTeamList = builderSystem.getAllTeams();
         for (int i = 0; i < getTeamList.length(); i++) {
 
             String objecktTeamList = getTeamList.getJSONObject(i).getString("name");
 
-        }
+        }*/
         List<String> playerNames = new ArrayList<>();
         Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
         Bukkit.getServer().getOnlinePlayers().toArray(players);

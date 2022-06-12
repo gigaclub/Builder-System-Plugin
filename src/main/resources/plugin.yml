@@ -3,21 +3,18 @@ version: @version@
 main: net.gigaclub.buildersystemplugin.Main
 
 api-version: 1.18
-authors: [Feier68]
+authors: [ Feier68 ]
 
 description: Builder-System-Plugin
-depend:
-  - Translation
-  - CloudNet-Bridge
-  - HeadDatabase
+load: POSTWORLD
+depend: [ Translation, CloudNet-Bridge, HeadDatabase ]
+
 website: Gigaclub.net
 
 
 commands:
   bsc:
     description: /bsc <test>
-  gcteams:
-    description: command zum verwalten von teams
   gctask:
     description: command zum verwalten von task
   gcprojekt:
