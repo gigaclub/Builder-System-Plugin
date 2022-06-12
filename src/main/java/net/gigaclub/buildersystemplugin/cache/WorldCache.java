@@ -7,13 +7,14 @@ import net.gigaclub.buildersystemplugin.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class WorldCache {
 
@@ -44,6 +45,7 @@ public class WorldCache {
 
     public Inventory getInventory(int index) {
         this.check_is_world();
+        System.out.println("getInventory");
         return inventories.get(index);
     }
 
@@ -62,7 +64,7 @@ public class WorldCache {
 
         while (fullCount < taskCont) {
 
-            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Task List"));
+            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "World List"));
             ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
             for (int i = 0; i <= 8; i++) {
                 inventory.setItem(i, p);
@@ -78,6 +80,7 @@ public class WorldCache {
             inventory.setItem(26, p);
             inventory.setItem(35, p);
             inventory.setItem(44, p);
+
 
             if (index > 1){
                 inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index - 1)).setGui(true).addIdentifier("world_l").addIndex(index-1).setAmount(index - 1).build());
@@ -101,16 +104,20 @@ public class WorldCache {
                     worldinfo(iworld, inventory, cont, worlds);
                     iworld++;
                     fullCount++;
+
+
                 }
                 cont++;
             }
             index++;
 
+            this.inventories.add(inventory);
+
         }
     }
 
     public void worldinfo(int iworld, Inventory inventory, int i, JSONArray worlds) {
-        this.check_is_world();
+
         try {
             JSONObject world = worlds.getJSONObject(iworld);
         } catch (Exception e) {
@@ -128,7 +135,7 @@ public class WorldCache {
         worldlore.add(ChatColor.GRAY + "builder_team.world.list.world_type" + " " + ChatColor.WHITE + world.getString("world_type"));
         worldlore.add(ChatColor.WHITE + " " );
         worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_teams" );
-        JSONArray teams = world.getJSONArray("team_manager_ids");
+        JSONArray teams = world.getJSONArray("team_ids");
 
         for (int j = 0; j < teams.length(); j++) {
             JSONObject team = teams.getJSONObject(j);
@@ -145,17 +152,18 @@ public class WorldCache {
         worldlore.add(ChatColor.WHITE + " " );
         worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_user" );
 
-        JSONArray users = world.getJSONArray("user_manager_ids");
+        JSONArray users = world.getJSONArray("user_ids");
         for (int j = 0; j < users.length(); j++) {
 
             JSONObject user = users.getJSONObject(j);
 
-            Player player11 = Bukkit.getPlayer(user.getString("name"));
-            String player21 = player11.toString();
+            UUID uuid = UUID.fromString(user.getString("mc_uuid"));
+            OfflinePlayer player11 = Bukkit.getOfflinePlayer(uuid);
+            String player21 = player11.getName();
             StringBuilder res1 = new StringBuilder();
-
-            res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
             String strValue = "ChatColor.GRAY +";
+            res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
+
 
             res1.append(new StringBuilder(strValue).reverse());
             res1.toString();
@@ -163,7 +171,7 @@ public class WorldCache {
             worldlore.add(ChatColor.WHITE + res1.toString());
 
         }
-            inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).addID(world.getInt("id")).addIdentifier("world").setGui(true).setLore(worldlore).build());
+        inventory.setItem(i, new ItemBuilder(Material.GREEN_CONCRETE).setDisplayName(ChatColor.GRAY + "Name: " + ChatColor.GREEN + world.getString("name")).addID(world.getInt("world_id")).addIdentifier("world").setGui(true).setLore(worldlore).build());
 
     }
 

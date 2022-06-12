@@ -50,14 +50,16 @@ public class WorldGui {
 
     public void WorldListAll(Player player, int index) {
         ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To World Menu")).setLore((ChatColor.AQUA + "Back to World Gui")).setGui(true).addIdentifier("World_Opener").build();
+
         Inventory inventory = Main.getWorldCache().getInventory(index);
+
         int size = 9 * 6;
         inventory.setItem(size - 1, backtoTask);
         player.openInventory(inventory);
     }
 
     public  void WorldListUser(Player player,int index) {
-        JSONArray worlds = Main.getWorldCache().worldCache;
+        JSONArray worlds = builderSystem.getAllWorlds();
         HeadDatabaseAPI api = new HeadDatabaseAPI();
 
         ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Task Menu")).setLore((ChatColor.AQUA + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
@@ -72,7 +74,7 @@ public class WorldGui {
 
         while (fullCount < taskCont) {
 
-            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Task List"));
+            Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "World User List"));
             ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
             for (int i = 0; i <= 8; i++) {
                 inventory.setItem(i, p);
@@ -149,7 +151,7 @@ public class WorldGui {
         worldlore.add(ChatColor.GRAY + "builder_team.world.list.world_type" + " " + ChatColor.WHITE + world.getString("world_type"));
         worldlore.add(ChatColor.WHITE + " " );
         worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_teams" );
-        JSONArray teams = world.getJSONArray("team_manager_ids");
+        JSONArray teams = world.getJSONArray("team_ids");
 
         for (int j = 0; j < teams.length(); j++) {
             JSONObject team = teams.getJSONObject(j);
@@ -166,7 +168,7 @@ public class WorldGui {
         worldlore.add(ChatColor.WHITE + " " );
         worldlore.add(ChatColor.WHITE + "builder_team.world.list.world_manager_user" );
 
-        JSONArray users = world.getJSONArray("user_manager_ids");
+        JSONArray users = world.getJSONArray("user_ids");
         for (int j = 0; j < users.length(); j++) {
 
             JSONObject user = users.getJSONObject(j);
@@ -174,11 +176,10 @@ public class WorldGui {
             Player player11 = Bukkit.getPlayer(user.getString("name"));
             String player21 = player11.toString();
             StringBuilder res1 = new StringBuilder();
-
+            res1.append(ChatColor.GRAY + "");
             res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
-            String strValue = "ChatColor.GRAY +";
 
-            res1.append(new StringBuilder(strValue).reverse());
+
             res1.toString();
 
             worldlore.add(ChatColor.WHITE + res1.toString());

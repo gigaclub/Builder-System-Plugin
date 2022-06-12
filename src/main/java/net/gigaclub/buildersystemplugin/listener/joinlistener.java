@@ -106,14 +106,6 @@ public class joinlistener implements Listener {
                         startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
                     }
                 }
-                JSONArray managers = world.getJSONArray("user_manager_ids");
-                for (int j = 0; j < managers.length(); j++) {
-                    JSONObject manager = managers.getJSONObject(j);
-                    String userUUID = manager.getString("mc_uuid");
-                    if (Objects.equals(userUUID, playerUUID)) {
-                        startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
-                    }
-                }
             }
 
 
@@ -125,20 +117,19 @@ public class joinlistener implements Listener {
             }
             JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
 
- /*           for (int j = 0; j < teams.length(); j++) {
+/*            for (int j = 0; j < teams.length(); j++) {
                 JSONArray teamworlds = teams.getJSONArray(j);
-                JSONArray team = teamworlds.getJSONArray()
+                JSONArray team = teamworlds.getJSONArray("")
 
                 JSONArray teamWorlds = worldid.getJSONObject("world_ids");
                 JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
                 for (int i = 0; i < teamWorlds.length(); i++) {
                     startServer(teamWorlds, i, builderSystem, playerUUID, j, t, player);
-                }
-                for (int i = 0; i < teamWorldManagers.length(); i++) {
-                    startServer(teamWorldManagers, i, builderSystem, playerUUID, j, t, player);
                 }*/
+
+            //           }
         }
-        }
+    }
 
 
     private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {

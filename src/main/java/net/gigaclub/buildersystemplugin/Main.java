@@ -35,9 +35,7 @@ public final class Main extends JavaPlugin implements Listener {
     private static TaskCache taskCache;
     private static WorldCache worldCache;
 
-    public static WorldCache getWorldCache() {
-        return Main.worldCache;
-    }
+
 
 
     @Override
@@ -85,6 +83,10 @@ public final class Main extends JavaPlugin implements Listener {
 
     public static TaskCache getTaskCache() {
         return Main.taskCache;
+    }
+
+    public static WorldCache getWorldCache() {
+        return Main.worldCache;
     }
 
     public static void registerTranslations() {
@@ -209,6 +211,8 @@ public final class Main extends JavaPlugin implements Listener {
         getTaskCache().invalidateCache();
         getTaskCache().invalidateInventoryCache();
 
+        getWorldCache().invalidateCache();
+        getWorldCache().invalidateInventoryCache();
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
@@ -220,9 +224,6 @@ public final class Main extends JavaPlugin implements Listener {
             }
         }, 0, 1200);
 
-
-        getWorldCache().invalidateCache();
-        getWorldCache().invalidateInventoryCache();
 
     }
 
