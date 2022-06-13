@@ -1,7 +1,6 @@
 package net.gigaclub.buildersystemplugin.Config;
 
 
-
 import net.gigaclub.buildersystemplugin.Main;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -26,7 +25,6 @@ public class Config {
 
         Config.save();
     }
-
 
 
     public static void save() {

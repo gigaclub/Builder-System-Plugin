@@ -1,10 +1,12 @@
 package net.gigaclub.buildersystemplugin.Commands;
 
+
 import net.gigaclub.buildersystem.BuilderSystem;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +17,10 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
-
-import static org.bukkit.Bukkit.getLogger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 public class Worlds implements CommandExecutor, TabCompleter {
 
@@ -27,6 +30,13 @@ public class Worlds implements CommandExecutor, TabCompleter {
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
+        JSONArray ownteamname;
+        try {
+             ownteamname = builderSystem.getTeamsByMember(playerUUID);
+
+        } catch (Exception e) {
+            return false;
+        }
 
 
         if (sender instanceof Player) {
@@ -35,48 +45,41 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
 
                 case "createasteam":
-                    String ownteamname = builderSystem.getTeamNameByMember(playerUUID).getString("name");
+                    
+                    if (args.length == 1 || args.length == 2) {
+                        player.sendMessage(ChatColor.RED + t.t("builder_team.to_less_arguments", playerUUID));
+                    }
+                    if (args.length == 3) {
 
-                    getLogger().info("teamname: " + ownteamname);
-                    if (args.length == 2) {
-                        JSONArray allTasks = builderSystem.getAllTasks();
-                        for (int i = 0; i < allTasks.length(); i++) {
-                            int taskID = allTasks.getJSONObject(i).getInt("id");
-                            if (taskID == Integer.parseInt(args[1])) {
-                                JSONObject task = builderSystem.getTask(taskID);
-                                String TaskName = task.getString("name");
-                                builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), TaskName, "default");
-                                player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
-                            }
-                        }
-                    } else if (args.length == 3) {
-                        JSONArray worldTypes = builderSystem.getAllWorldTypes();
-                        for (int i = 0; i < worldTypes.length(); i++) {
-                            JSONObject worldType = worldTypes.getJSONObject(i);
-                            String worldTyp = worldType.getString("name");
-                            boolean defaultworldtyp = worldType.getBoolean("default");
+                        JSONObject task = builderSystem.getTask(Integer.getInteger(args[2]));
+                        String TaskName = task.getString("name");
 
-                            if (defaultworldtyp == true) {
-                                if (isInt(args[1])) {
-                                    builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), args[2], worldTyp);
-                                    player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
-                                }
-                            }
-                        }
+                        builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]), TaskName, "");
+                        player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
+                        break;
+
+
                     } else if (args.length == 4) {
                         JSONArray worldTypes = builderSystem.getAllWorldTypes();
-                        for (int i = 0; i < worldTypes.length(); i++) {
-                            JSONObject worldType = worldTypes.getJSONObject(i);
-                            String worldTyp = worldType.getString("name");
-                            String sworldTyp = stackworldtyp(args, 4);
-                            if (sworldTyp.toLowerCase().equals(worldTyp.toLowerCase())) {
-                                if (isInt(args[1])) {
-                                    builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), args[2], worldTyp);
-                                    player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
-                                }
-                            }
+
+                        if (isInt(args[1])) {
+                            builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3], "");
+                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
+                            break;
                         }
-                    } else if (args.length >= 5) {
+
+                    } else if (args.length == 5) {
+
+
+                        if (isInt(args[1])) {
+
+                            builderSystem.createWorldAsTeam(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3], args[4]);
+                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
+                            break;
+                        }
+
+
+                    } else if (args.length >= 6) {
                         player.sendMessage(t.t("BuilderSystem.toomany_Arguments", playerUUID));
                         return false;
                     }
@@ -87,46 +90,35 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     if (args.length == 2) {
                         // task auswahl per id oder name
                         JSONArray allTasks = builderSystem.getAllTasks();
-                        for (int i = 0; i < allTasks.length(); i++) {
-                            JSONObject taskObject = (JSONObject) allTasks.get(i);
-                            int Taskid = taskObject.getInt("id");
-                            if (Taskid == Integer.parseInt(args[1])) {
-                                JSONObject task = builderSystem.getTask(Taskid);
-                                String TaskName = task.getString("name");
-                                getLogger().info("Taskname: " + TaskName);
-                                builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), TaskName, "default");
-                                player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
+                        JSONObject task = builderSystem.getTask(Integer.getInteger(args[2]));
+                        String TaskName = task.getString("name");
 
-                            }
+
+                        if (isInt(args[1])) {
+                            builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), TaskName, "");
+                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_team_succses", playerUUID));
+                            break;
                         }
+
+
                     } else if (args.length == 3) {
                         JSONArray worldTypes = builderSystem.getAllWorldTypes();
-                        for (int i = 0; i < worldTypes.length(); i++) {
-                            JSONObject worldType = worldTypes.getJSONObject(i);
-                            String worldTyp = worldType.getString("name");
-                            boolean defaultworldtyp = worldType.getBoolean("default");
-                            if (defaultworldtyp) {
-                                if (isInt(args[1])) {
-                                    builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), args[2], worldTyp);
-                                    player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_user_succses", playerUUID));
 
+
+                        if (isInt(args[1])) {
+                            builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), args[2], "");
+                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_user_succses", playerUUID));
+                                    break;
                                 }
-                            }
-                        }
                     } else if (args.length >= 4) {
-                        JSONArray worldTypes = builderSystem.getAllWorldTypes();
-                        for (int i = 0; i < worldTypes.length(); i++) {
-                            JSONObject worldType = worldTypes.getJSONObject(i);
-                            String worldTyp = worldType.getString("name");
-                            String sworldTyp = stackworldtyp(args, 4);
-                            if (sworldTyp.equalsIgnoreCase(worldTyp.toLowerCase())) {
-                                if (isInt(args[1])) {
-                                    builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), args[2], worldTyp);
-                                    player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_user_succses", playerUUID));
 
-                                }
-                            }
+
+                        if (isInt(args[1])) {
+                            builderSystem.createWorldAsUser(playerUUID, Integer.parseInt(args[1]), args[2], args[3]);
+                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.create_user_succses", playerUUID));
+                            break;
                         }
+
 
                     } else if (args.length >= 5) {
                         player.sendMessage(t.t("BuilderSystem.toomany_Arguments", playerUUID));
@@ -134,18 +126,20 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     }
                     break;
 
+
                 case "removeteam":
                     // add function to remove other team
-                    String ownteamname3 = builderSystem.getTeamNameByMember(playerUUID).getString("name");
+                    
                     if (args.length == 2) {
-                        
+
                     }
-                    if (ownteamname3 != null) {
-                        if (!(ownteamname3.equalsIgnoreCase(args[1]))) {
-                            String Teamname = builderSystem.getTeam(args[1].toLowerCase()).getString("name");
-                            if (isInt(args[2])) {
-                                builderSystem.removeTeamFromWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
-                                player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.remove_succses", playerUUID));
+                    if (ownteamname != null) {
+                        for (int i = 0; i < ownteamname.length(); i++) {
+                            if (i == Integer.parseInt(args[1])) {
+                                if (isInt(args[2])) {
+                                    builderSystem.removeTeamFromWorld(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                                    player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.remove_succses", playerUUID));
+                                }
                             }
                         }
                     }
@@ -156,29 +150,31 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                     if (args[3].toLowerCase(Locale.ROOT) == Bukkit.getOfflinePlayer(args[1]).getName().toLowerCase(Locale.ROOT)) {
                         if (isInt(args[2])) {
-                            builderSystem.removeUserFromWorld(playerUUID,args[3], Integer.parseInt(args[2]));
+                            builderSystem.removeUserFromWorld(playerUUID, args[3], Integer.parseInt(args[2]));
                             player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.remove_succses", playerUUID));
                         }
                     }
                     break;
 
                 case "addteam":
-                    String ownteamname1 = builderSystem.getTeamNameByMember(playerUUID).getString("name");
-                    if (!(ownteamname1.equalsIgnoreCase(args[1]))) {
-                        String Teamname = builderSystem.getTeam(args[1]).getString("name");
-                        if (isInt(args[2])) {
+                    for (int i = 0; i < ownteamname.length(); i++) {
+                        if (i != Integer.parseInt(args[1])) {
+                            int Teamname = i;
+                            if (isInt(args[2])) {
 
-                            builderSystem.addTeamToWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
-                            player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.addteam_succses", playerUUID));
+                                builderSystem.addTeamToWorld(playerUUID, Teamname, Integer.parseInt(args[2]));
+                                player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.addteam_succses", playerUUID));
+                            }
                         }
                     }
+
                     break;
 
                 case "adduser":
                     if (isInt(args[2])) {
                         String addetuser = Bukkit.getPlayer(args[1]).toString();
 
-                        builderSystem.addTeamToWorld(playerUUID, addetuser, Integer.parseInt(args[2]));
+                        builderSystem.addUserToWorld(playerUUID, addetuser, Integer.parseInt(args[2]));
                         player.sendMessage(ChatColor.GREEN + t.t("BuilderSystem.world.adduser_succses", playerUUID));
 
                     }
@@ -215,31 +211,31 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                             JSONObject user = users.getJSONObject(j);
 
-                            Player player11 = Bukkit.getPlayer(user.getString("name"));
-                            String player21 = player11.toString();
+                            UUID uuid = UUID.fromString(user.getString("mc_uuid"));
+                            OfflinePlayer player11 = Bukkit.getOfflinePlayer(uuid);
+                            String player21 = player11.getName();
                             StringBuilder res1 = new StringBuilder();
 
+                            res1.append(ChatColor.GRAY + "");
                             res1.append(player21).append(ChatColor.WHITE + " , " + ChatColor.GRAY);
-                            String strValue = "ChatColor.GRAY +";
 
-                            res1.append(new StringBuilder(strValue).reverse());
                             res1.toString();
 
                             player.sendMessage(res1.toString());
 
                         }
 
-                            player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
-
-                        }
-                        break;
+                        player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
 
                     }
-
+                    break;
 
             }
-            return false;
+
+
         }
+        return false;
+    }
 
 
     @Override
@@ -267,15 +263,21 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                     if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
+                        createname.add("<" + t.t("builder_team.world.tab_team_id", playerUUID) + ">");
+                        return createname;
+                    }
+                    if (args.length == 3) {
+                        List<String> createname = new ArrayList<>();
                         createname.add("<" + t.t("builder_team.tab_task_id", playerUUID) + ">");
                         return createname;
 
-                    } else if (args.length == 3) {
+                    } else if (args.length == 4) {
                         List<String> createname = new ArrayList<>();
                         createname.add("<" + t.t("builder_team.world.tab_world_name", playerUUID) + ">");
                         return createname;
 
-                    } else if (args.length == 4) {
+                    } else if (args.length == 5) {
+                        // WorldTyps
                         List<String> createname = new ArrayList<>();
                         JSONArray getWorldTypesList = builderSystem.getAllWorldTypes();
                         for (int i = 0; i < getWorldTypesList.length(); i++) {
@@ -286,27 +288,16 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                         }
                         return createname;
-                        }
-                    break;
                     }
-
+                    break;
             }
+
+        }
 
 
         return null;
     }
 
-
-    private String stackworldtyp(String[] args, int at) {
-        StringBuilder res = new StringBuilder();
-        for (int i = at; i < args.length; i++) {
-            if (i < 2 + at) {
-                res.append(args[i]).append(" ");
-            } else
-                break;
-        }
-        return res.toString();
-    }
 
     private static boolean isInt(String str) {
         try {

@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static net.gigaclub.buildersystemplugin.Config.Config.getConfig;
 
@@ -64,6 +63,8 @@ public class Tasks implements CommandExecutor, TabCompleter {
                                 builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                                 player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", playerUUID));
                             }
+                            Main.getTaskCache().invalidateCache();
+                            Main.getTaskCache().invalidateInventoryCache();
 
                         }
                         break;
@@ -72,13 +73,15 @@ public class Tasks implements CommandExecutor, TabCompleter {
                             player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
                             return false;
                         }
-                        if (player.hasPermission("builderteam.admin")) {
+                        if (player.hasPermission("gigaclub_builder_system.remove_task")) {
                             if (args.length == 2) {
                                 if (isInt(args[1])) {
 
                                     int i = Integer.parseInt(args[1]);
                                     builderSystem.removeTask(i);
                                     player.sendMessage(t.t("builder_team.task.remove_succses", playerUUID));
+                                    Main.getTaskCache().invalidateCache();
+                                    Main.getTaskCache().invalidateInventoryCache();
 
                                 } else player.sendMessage(t.t("builder_team.wrong_arguments", playerUUID));
                             }
@@ -94,11 +97,11 @@ public class Tasks implements CommandExecutor, TabCompleter {
                             try {
                                 task.getBoolean("description");
                             } catch (Exception e) {
-                                player.sendMessage(ChatColor.GRAY + "Description: " + ChatColor.WHITE + task.getString("description"));
+                                player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.Description", playerUUID)) + " " + ChatColor.WHITE + task.getString("description"));
                             }
-                            player.sendMessage(ChatColor.GRAY + "Build Size: " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
+                            player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", playerUUID)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
                             JSONArray worlds = task.getJSONArray("world_ids");
-                            player.sendMessage("Projeckt count: " + worlds.length());
+                            player.sendMessage((t.t("builder_team.task.list.projeckt_count", playerUUID)) + " " + worlds.length());
 
                             player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
                         }
@@ -120,13 +123,13 @@ public class Tasks implements CommandExecutor, TabCompleter {
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
 
-        List<String> teamlistofplayer = new ArrayList<>();
+/*        List<String> teamlistofplayer = new ArrayList<>();
         JSONArray getTeamList = builderSystem.getAllTeams();
         for (int i = 0; i < getTeamList.length(); i++) {
 
             String objecktTeamList = getTeamList.getJSONObject(i).getString("name");
 
-        }
+        }*/
         List<String> playerNames = new ArrayList<>();
         Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
         Bukkit.getServer().getOnlinePlayers().toArray(players);
