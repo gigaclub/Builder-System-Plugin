@@ -68,7 +68,7 @@ public final class Main extends JavaPlugin implements Listener {
         getLogger().info(PREFIX + "Config files set.");
     }
 
-    public static @NotNull Plugin getPlugin() {
+    public static Main getPlugin() {
         return plugin;
     }
 

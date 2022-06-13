@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.Andere.Guis;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
@@ -24,7 +25,7 @@ public class WorldGui {
 
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
-    public ArrayList<String> WorldloreList() {
+    public ArrayList<String> worldloreList() {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(ChatColor.GOLD + "-----------------");
         loreList.add(ChatColor.GOLD + "Open Project Menu");
@@ -32,7 +33,7 @@ public class WorldGui {
         return loreList;
     }
 
-    public void WorldGui(Player player) {
+    public void worldGui(Player player) {
         ItemStack backtoMain = new ItemBuilder(this.api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
 
         ItemStack WorldListAll = new ItemBuilder(Material.PAPER).setGui(true).setDisplayName((ChatColor.RED + "World List all")).setLore((ChatColor.AQUA + "Open The Complet World List")).addIdentifier("WorldlistAll").build();
@@ -40,6 +41,9 @@ public class WorldGui {
 
         int size = 9 * 3;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Projeckt Gui"));
+        GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
+        inventory = guiLayout.guiFullBuilder(inventory,size);
+
         inventory.setItem(10, WorldListAll);
         inventory.setItem(16, WorldListUser);
 
@@ -48,7 +52,7 @@ public class WorldGui {
         player.openInventory(inventory);
     }
 
-    public void WorldListAll(Player player, int index) {
+    public void worldListAll(Player player, int index) {
         ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To World Menu")).setLore((ChatColor.AQUA + "Back to World Gui")).setGui(true).addIdentifier("World_Opener").build();
 
         Inventory inventory = Main.getWorldCache().getInventory(index);
@@ -58,7 +62,7 @@ public class WorldGui {
         player.openInventory(inventory);
     }
 
-    public  void WorldListUser(Player player,int index) {
+    public  void worldListUser(Player player,int index) {
         JSONArray worlds = builderSystem.getAllWorlds();
         HeadDatabaseAPI api = new HeadDatabaseAPI();
 
@@ -75,21 +79,8 @@ public class WorldGui {
         while (fullCount < taskCont) {
 
             Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "World User List"));
-            ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
-            for (int i = 0; i <= 8; i++) {
-                inventory.setItem(i, p);
-            }
-            for (int i = 45; i <= 52; i++) {
-                inventory.setItem(i, p);
-            }
-            inventory.setItem(9, p);
-            inventory.setItem(18, p);
-            inventory.setItem(27, p);
-            inventory.setItem(36, p);
-            inventory.setItem(17, p);
-            inventory.setItem(26, p);
-            inventory.setItem(35, p);
-            inventory.setItem(44, p);
+
+            GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
 
             if (index1 > 1){
                 inventory.setItem(47, new ItemBuilder(Material.ARROW).setDisplayName("seite "+ (index1 - 1)).setGui(true).addIdentifier("task_l").addIndex(index1-1).setAmount(index1 - 1).build());

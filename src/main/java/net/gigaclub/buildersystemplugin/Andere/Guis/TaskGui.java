@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.Andere.Guis;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class TaskGui implements Listener {
+    GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
 
     public int invWatName = 0;
     public Integer taskinv = 0;
@@ -33,9 +35,9 @@ public class TaskGui implements Listener {
     Translation t = Main.getTranslation();
     BuilderSystem builderSystem = Main.getBuilderSystem();
     Boolean worldTypSelectoractiv = false;
-    String WorldTypeselectet;
-    ItemStack ON = new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.GREEN + "ON").build();
-    ItemStack OFF = new ItemBuilder(Material.RED_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.RED + "OFF").build();
+    String worldTypeselectet;
+    final ItemStack ON = new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.GREEN + "ON").build();
+    final ItemStack OFF = new ItemBuilder(Material.RED_CONCRETE_POWDER).setGui(true).setDisplayName(ChatColor.RED + "OFF").build();
     ItemStack on;
     ItemStack off;
 
@@ -44,7 +46,7 @@ public class TaskGui implements Listener {
         this.off = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Deactivate")).setLore("").setGui(true).addIdentifier("off").build();
     }
 
-    public ArrayList<String> TaskloreList() {
+    public ArrayList<String> taskloreList() {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(ChatColor.GOLD + "--------------");
         loreList.add(ChatColor.GOLD + "Open Task List");
@@ -53,20 +55,20 @@ public class TaskGui implements Listener {
         return loreList;
     }
 
-    public void TaskGui(Player player) {
+    public void taskGui(Player player) {
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         int size = 9 * 5;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Task Gui"));
-        for (int i = 0; i < size; i++) {
-            inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
-        }
+
+        inventory = guiLayout.guiFullBuilder(inventory,size);
+
         inventory.setItem(10, new ItemBuilder(Material.PAPER).setGui(true).addIdentifier("task_list").setDisplayName("Task List").build());
         inventory.setItem(size - 1, backtoMain);
         player.openInventory(inventory);
     }
 
-    public void TaskList(Player player, int index) {
+    public void taskList(Player player, int index) {
         ItemStack backtoTask = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Task Menu")).setLore((ChatColor.AQUA + "Back to Task Gui")).setGui(true).addIdentifier("Task_Opener").build();
         Inventory inventory = Main.getTaskCache().getInventory(index);
         int size = 9 * 6;
@@ -86,18 +88,21 @@ public class TaskGui implements Listener {
         return loreList;
     }
 
-    public void TaskSelect(Player player, int taskid) {
+    public void taskSelect(Player player, int taskid) {
         int size = 9 * 1;
         Inventory inventory = Bukkit.createInventory(null, size, ("Create a Projeckt"));
+        inventory = guiLayout.guiFullBuilder(inventory,size);
+
         inventory.setItem(2, new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Create as Team")).setLore(createAsTeamlore()).setGui(true).addIdentifier("createProjecktasTeam").addID(taskid).build());
         inventory.setItem(6, new ItemBuilder(Material.PLAYER_HEAD).setHead(player.getDisplayName()).setDisplayName("Create as User").setLore(createAsUserlore()).setGui(true).addIdentifier("createProjecktasUser").addID(taskid).build());
 
     }
-    public void WorldtypSelect(Player player) {
+    public void worldtypSelect(Player player) {
         worldTypSelectoractiv = true;
         int size = 9 * 4;
         String worldTyp = "flat";
         Inventory inventory = Bukkit.createInventory(null, size, ("Witch world type"));
+        inventory = guiLayout.guiFullBuilder(inventory,size);
         JSONArray worldTypes = builderSystem.getAllWorldTypes();
 
         for (int i = 0; i < worldTypes.length(); i++) {
@@ -113,29 +118,9 @@ public class TaskGui implements Listener {
 
 
 
-    public ArrayList<String> PluginSelector() {return PluginSelector();}
-
-    public void Switch(Inventory inventory,String tag,Boolean Default,Boolean Switch,int Slot){
-        if(Default = true){
-              inventory.setItem(Slot,on);
-        }else inventory.setItem(Slot,off);
-
-        while (inventory.getItem(Slot) == on ||inventory.getItem(Slot) == off) {
-            if (inventory.getItem(Slot) == on) {
-                PluginSelector().add(tag);
-
-            } else {
-                for (int i = 0; i < PluginSelector().size(); i++) {
-                    if (PluginSelector().get(i) == tag)
-                        PluginSelector().remove(i);
-                }
-            }
-        }
-    }
-
 
     @EventHandler
-    public void ClickEvent(InventoryClickEvent event) {
+    public void clickEvent(InventoryClickEvent event) {
         BuilderSystem builderSystem = Main.getBuilderSystem();
         if (worldTypSelectoractiv = true) {
 
@@ -160,7 +145,7 @@ public class TaskGui implements Listener {
                     JSONObject worldType = worldTypes.getJSONObject(i);
                     String worldTyp = worldType.getString("name");
                     if (input.equalsIgnoreCase(worldTyp.toLowerCase())) {
-                        WorldTypeselectet = worldTyp;
+                        worldTypeselectet = worldTyp;
                     }
                 }
               int clickSlot = event.getSlot();

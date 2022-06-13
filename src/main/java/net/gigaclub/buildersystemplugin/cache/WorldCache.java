@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.cache;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import org.bukkit.Bukkit;
@@ -65,21 +66,8 @@ public class WorldCache {
         while (fullCount < taskCont) {
 
             Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "World List"));
-            ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
-            for (int i = 0; i <= 8; i++) {
-                inventory.setItem(i, p);
-            }
-            for (int i = 45; i <= 52; i++) {
-                inventory.setItem(i, p);
-            }
-            inventory.setItem(9, p);
-            inventory.setItem(18, p);
-            inventory.setItem(27, p);
-            inventory.setItem(36, p);
-            inventory.setItem(17, p);
-            inventory.setItem(26, p);
-            inventory.setItem(35, p);
-            inventory.setItem(44, p);
+            GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
+            inventory = guiLayout.guiLayoutBuilder(inventory,size);
 
 
             if (index > 1){

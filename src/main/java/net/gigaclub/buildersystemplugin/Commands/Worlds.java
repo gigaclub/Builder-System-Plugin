@@ -30,6 +30,13 @@ public class Worlds implements CommandExecutor, TabCompleter {
         String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
+        JSONArray ownteamname;
+        try {
+             ownteamname = builderSystem.getTeamsByMember(playerUUID);
+
+        } catch (Exception e) {
+            return false;
+        }
 
 
         if (sender instanceof Player) {
@@ -38,14 +45,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
 
                 case "createasteam":
-                    try {
-                        JSONArray ownteamname = builderSystem.getTeamsByMember(playerUUID);
-
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    JSONArray ownteamname = builderSystem.getTeamsByMember(playerUUID);
-
+                    
                     if (args.length == 1 || args.length == 2) {
                         player.sendMessage(ChatColor.RED + t.t("builder_team.to_less_arguments", playerUUID));
                     }
@@ -129,12 +129,12 @@ public class Worlds implements CommandExecutor, TabCompleter {
 
                 case "removeteam":
                     // add function to remove other team
-                    JSONArray ownteamname3 = builderSystem.getTeamsByMember(playerUUID);
+                    
                     if (args.length == 2) {
 
                     }
-                    if (ownteamname3 != null) {
-                        for (int i = 0; i < ownteamname3.length(); i++) {
+                    if (ownteamname != null) {
+                        for (int i = 0; i < ownteamname.length(); i++) {
                             if (i == Integer.parseInt(args[1])) {
                                 if (isInt(args[2])) {
                                     builderSystem.removeTeamFromWorld(playerUUID, Integer.parseInt(args[1]), Integer.parseInt(args[2]));
@@ -157,8 +157,7 @@ public class Worlds implements CommandExecutor, TabCompleter {
                     break;
 
                 case "addteam":
-                    JSONArray ownteamname1 = builderSystem.getTeamsByMember(playerUUID);
-                    for (int i = 0; i < ownteamname1.length(); i++) {
+                    for (int i = 0; i < ownteamname.length(); i++) {
                         if (i != Integer.parseInt(args[1])) {
                             int Teamname = i;
                             if (isInt(args[2])) {

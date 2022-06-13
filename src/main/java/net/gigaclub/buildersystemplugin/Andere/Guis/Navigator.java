@@ -2,12 +2,13 @@ package net.gigaclub.buildersystemplugin.Andere.Guis;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,15 +48,13 @@ public class Navigator implements Listener {
         String playerUUID = player.getUniqueId().toString();
         int size = 9 * 3;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.DARK_AQUA + "Builder System Gui"));
-        ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
-        for (int j = 0; j < size; j++) {
-            inventory.setItem(j, p);
-        }
+        GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
+        inventory = guiLayout.guiFullBuilder(inventory,size);
 
 
-        ItemStack TeamGui = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Team")).setLore(this.teamGui.TeamloreList()).setGui(true).addIdentifier("Team_Opener").build();
-        ItemStack TaskList = new ItemBuilder(api.getItemHead("10142")).setGui(true).addIdentifier("task_list").setDisplayName((ChatColor.AQUA) + "Task List").setLore(this.taskGui.TaskloreList()).build();
-        ItemStack ProjectList = new ItemBuilder(api.getItemHead("32442")).setGui(true).addIdentifier("World_Opener").setDisplayName((ChatColor.BLUE + " your Project List")).setLore(this.worldGui.WorldloreList()).build();
+        ItemStack TeamGui = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Team")).setLore(this.teamGui.teamloreList()).setGui(true).addIdentifier("Team_Opener").build();
+        ItemStack TaskList = new ItemBuilder(api.getItemHead("10142")).setGui(true).addIdentifier("task_list").setDisplayName((ChatColor.AQUA) + "Task List").setLore(this.taskGui.taskloreList()).build();
+        ItemStack ProjectList = new ItemBuilder(api.getItemHead("32442")).setGui(true).addIdentifier("World_Opener").setDisplayName((ChatColor.BLUE + " your Project List")).setLore(this.worldGui.worldloreList()).build();
 
         inventory.setItem(10, TeamGui);
         inventory.setItem(13, TaskList);
@@ -64,7 +63,7 @@ public class Navigator implements Listener {
     }
 
     @EventHandler
-    public void ClickEvent(InventoryClickEvent event) {
+    public void clickEvent(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack item = event.getCurrentItem();
 
@@ -77,7 +76,7 @@ public class Navigator implements Listener {
                 return;
             }
         }
-        String taskl = "task_l" + this.taskGui.taskinv;
+
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer data = meta.getPersistentDataContainer();
         if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING)) {
@@ -96,25 +95,25 @@ public class Navigator implements Listener {
 
                 case "Gui_Opener" -> mainGui(player);
                 //Main Gui
-                case "Team_Opener" -> this.teamGui.TeamGui(player);
-                case "Task_Opener" -> this.taskGui.TaskGui(player);
-                case "World_Opener" -> this.worldGui.WorldGui(player);
+                case "Team_Opener" -> this.teamGui.teamGui(player);
+                case "Task_Opener" -> this.taskGui.taskGui(player);
+                case "World_Opener" -> this.worldGui.worldGui(player);
 
 
 
                 //Team Gui
-                case "invite_list_Opener" -> this.teamGui.TeamInvite(player);
-                case "Team_Create" -> this.teamGui.TeamCreatename(player);
+                case "invite_list_Opener" -> this.teamGui.teamInvite(player);
+                case "Team_Create" -> this.teamGui.teamCreatename(player);
 
                 //Task Gui
-                case "task_list" -> this.taskGui.TaskList(player, taskInv);
-                case "task" -> this.taskGui.TaskSelect(player, taskID);
+                case "task_list" -> this.taskGui.taskList(player, taskInv);
+                case "task" -> this.taskGui.taskSelect(player, taskID);
                 case "createProjecktasTeam" -> this.taskGui.createProjecktasTeam(player, taskID);
                 case "createProjecktasUser" -> this.taskGui.createProjecktasUser(player, taskID);
 
                 //World Gui
-                case "WorldlistAll" -> this.worldGui.WorldListAll(player, worldInv);
-                case "WorldlistUser" -> this.worldGui.WorldListAll(player, worldInv);
+                case "WorldlistAll" -> this.worldGui.worldListAll(player, worldInv);
+                case "WorldlistUser" -> this.worldGui.worldListAll(player, worldInv);
 
             }
 
@@ -126,7 +125,7 @@ public class Navigator implements Listener {
 
 
     @EventHandler
-    public void ClickInvCancel(InventoryClickEvent event) {
+    public void clickInvCancel(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack item = event.getCurrentItem();
         if (item == null) {

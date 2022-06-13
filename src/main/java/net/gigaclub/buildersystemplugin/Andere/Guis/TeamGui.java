@@ -2,6 +2,7 @@ package net.gigaclub.buildersystemplugin.Andere.Guis;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.GuiLayoutBuilder;
 import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
@@ -24,11 +25,12 @@ public class TeamGui implements Listener {
 
     HeadDatabaseAPI api = new HeadDatabaseAPI();
     Translation t = Main.getTranslation();
+    GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
 
     BuilderSystem builderSystem = Main.getBuilderSystem();
 
     //Lore list für BS_gui
-    public ArrayList<String> TeamloreList() {
+    public ArrayList<String> teamloreList() {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(ChatColor.GOLD + "--------------");
         loreList.add(ChatColor.GOLD + "Open Team Menu");
@@ -36,16 +38,14 @@ public class TeamGui implements Listener {
         return loreList;
     }
 
-    public void TeamGui(Player player) {
+    public void teamGui(Player player) {
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         String playerUUID = player.getUniqueId().toString();
 
         ItemStack backtoMain = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Main Menu")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         int size = 9 * 3;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.RED + "Team Gui"));
-        for (int i = 0; i < size; i++) {
-            inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
-        }
+        inventory = guiLayout.guiFullBuilder(inventory,size);
         try {
             JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
             JSONObject team = teams.getJSONObject(1);
@@ -72,35 +72,15 @@ public class TeamGui implements Listener {
         player.openInventory(inventory);
     }
 
-    public void TeamInvite(Player player) {
+    public void teamInvite(Player player) {
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         String playerUUID = player.getUniqueId().toString();
 
-        try {
-
-
-        } catch (Exception e) {
-            return;
-        }
 
         ItemStack backtoTeam = new ItemBuilder(api.getItemHead("9334")).setDisplayName((ChatColor.RED + "To Team Menu")).setLore((ChatColor.AQUA + "Open The Team Gui")).setGui(true).addIdentifier("Team_Opener").build();
         int size = 9 * 6;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.GOLD + "Team Gui"));
-        ItemStack p = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build();
-        for (int i = 0; i <= 8; i++) {
-            inventory.setItem(i, p);
-        }
-        for (int i = 45; i <= 52; i++) {
-            inventory.setItem(i, p);
-        }
-        inventory.setItem(9, p);
-        inventory.setItem(18, p);
-        inventory.setItem(27, p);
-        inventory.setItem(36, p);
-        inventory.setItem(17, p);
-        inventory.setItem(26, p);
-        inventory.setItem(35, p);
-        inventory.setItem(44, p);
+        inventory = guiLayout.guiLayoutBuilder(inventory,size);
 
         for (int i = 10; i <= 16; i++) {
             inventory.setItem(i, new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).setDisplayName(" ").setGui(true).build());
@@ -133,40 +113,39 @@ public class TeamGui implements Listener {
         player.openInventory(inventory);
     }
 
-    public String TeamName;
-    public String TeamDesc;
     public AnvilGUI anvilgui;
 
-    public void TeamCreatename(Player player) {
+    public void teamCreatename(Player player) {
         anvilgui = new AnvilGUI.Builder()
-                .onClose(this::TeamGui
-                ).onComplete(((player1, output) -> {
+                    .onComplete(((player1, output) -> {
+                    System.out.println("on complete");
                     if (Objects.equals(output, " ") || Objects.equals(output, "Dein Team Heist") || Objects.equals(output, "D") || Objects.equals(output, "")) {
                         player.sendMessage("Geben sie eine Namen ein");
-                        TeamGui(player);
+                        teamGui(player);
 
                     } else {
 
 
                         player1.sendMessage("Team Name: " + output);
-                        TeamCreateDesc(player, output);
+                        teamCreateDesc(player, output);
                     }
                     return AnvilGUI.Response.close();
                 }))
                 .itemLeft(new ItemBuilder(Material.PAPER).setDisplayName("Team Name").build())
-
-                .title(ChatColor.GREEN + "Team Name(PflichtFeld)").plugin(Main.getPlugin()).text("Dein Team Heist").open(player);
+                .title(ChatColor.GREEN + "Team Name(PflichtFeld)")
+                .plugin(Main.getPlugin())
+                .text("Dein Team Heist")
+                .open(player);
     }
 
-    public void TeamCreateDesc(Player player, String teamName) {
+    public void teamCreateDesc(Player player, String teamName) {
         String playerUUID = player.getUniqueId().toString();
         anvilgui = new AnvilGUI.Builder()
-                .onClose(this::TeamGui
-                ).onComplete(((player1, output) -> {
+                    .onComplete(((player1, output) -> {
                     if (Objects.equals(output, " ") || Objects.equals(output, "Beschreibung") || Objects.equals(output, "B")) {
                         builderSystem.createTeam(playerUUID, teamName);
                         player.sendMessage("Team Erstellt ohne Desc");
-                        TeamGui(player);
+                        teamGui(player);
 
 
                     } else {
@@ -174,7 +153,7 @@ public class TeamGui implements Listener {
                         player.sendMessage("Team Beschreibung: " + output);
                         builderSystem.createTeam(playerUUID, teamName, output);
                         player.sendMessage("Team Erstellt Mit Desc");
-                        TeamGui(player);
+                        teamGui(player);
                     }
                     return AnvilGUI.Response.close();
                 }))
