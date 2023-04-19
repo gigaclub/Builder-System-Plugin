@@ -7,15 +7,18 @@ import de.dytanic.cloudnet.driver.service.*;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
 import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import net.gigaclub.buildersystem.BuilderSystem;
+import net.gigaclub.buildersystemplugin.Andere.InterfaceAPI.ItemBuilder;
 import net.gigaclub.buildersystemplugin.Main;
 import net.gigaclub.translation.Translation;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -53,13 +56,13 @@ public class joinlistener implements Listener {
                         ICloudPlayer entry = cloudPlayers.get(0);
                         IPlayerManager playerManager = this.playerManager;
                         int serviceId1 = this.serviceId;
-                        Player player2 = (Player) player;
+                        Player player2 = player;
                         @NotNull BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
                         taskID = scheduler.runTaskTimer(Main.getPlugin(), new Runnable() {
                             int countdown = 10;
 
                             public void run() {
-                                player2.sendMessage(t.t("BuilderSystem.countdown_begin", playerUUID));
+                                player2.sendMessage(t.t("BuilderSystem.countdown_begin", player));
                                 if (countdown > 0) {
                                     player2.sendMessage(String.valueOf(countdown));
                                 } else {
@@ -88,10 +91,10 @@ public class joinlistener implements Listener {
         FileConfiguration config = getConfig();
 
 
-
         if (config.getBoolean("server.server_autostart")) {
             String playerName = player.getName();
             JSONArray worlds = builderSystem.getAllWorlds();
+            if (worlds.length() == 0) return;
 
             for (int i = 0; i < worlds.length(); i++) {
                 JSONObject world = worlds.getJSONObject(i);
@@ -103,35 +106,34 @@ public class joinlistener implements Listener {
                         startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
                     }
                 }
-                JSONArray managers = world.getJSONArray("user_manager_ids");
-                for (int j = 0; j < managers.length(); j++) {
-                    JSONObject manager = managers.getJSONObject(j);
-                    String userUUID = manager.getString("mc_uuid");
-                    if (Objects.equals(userUUID, playerUUID)) {
-                        startServer(worlds, i, builderSystem, playerUUID, playerName, t, player);
-                    }
-                }
             }
 
-            JSONObject team = builderSystem.getTeamNameByMember(playerUUID);
-            if (Objects.equals(team.getString("name"), "false")) {
+
+            try {
+                JSONArray team = builderSystem.getTeamsByMember(playerUUID);
+
+            } catch (Exception e) {
                 return;
             }
+            JSONArray teams = builderSystem.getTeamsByMember(playerUUID);
 
-            String team_name = team.getString("name");
+/*            for (int j = 0; j < teams.length(); j++) {
+                JSONArray teamworlds = teams.getJSONArray(j);
+                JSONArray team = teamworlds.getJSONArray("")
 
-            JSONArray teamWorlds = team.getJSONArray("world_ids");
-            JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
-            for (int i = 0; i < teamWorlds.length(); i++) {
-                startServer(teamWorlds, i, builderSystem, playerUUID, team_name, t, player);
-            }
-            for (int i = 0; i < teamWorldManagers.length(); i++) {
-                startServer(teamWorldManagers, i, builderSystem, playerUUID, team_name, t, player);
-            }
+                JSONArray teamWorlds = worldid.getJSONObject("world_ids");
+                JSONArray teamWorldManagers = team.getJSONArray("world_manager_ids");
+                for (int i = 0; i < teamWorlds.length(); i++) {
+                    startServer(teamWorlds, i, builderSystem, playerUUID, j, t, player);
+                }*/
+
+            //           }
         }
     }
 
+
     private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {
+        
         JSONObject world_data = teamWorlds.getJSONObject(i);
         int world_id = 0;
         try {
@@ -149,14 +151,14 @@ public class joinlistener implements Listener {
 
         String worlds_typ = world.getString("world_type");
         //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-        player.sendMessage(t.t("bsc.Command.CreateServer", playerUUID));
-        player.sendMessage(t.t("bsc.Command.Teleport", playerUUID));
+        player.sendMessage(t.t("bsc.Command.CreateServer", player));
+        player.sendMessage(t.t("bsc.Command.Teleport", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
                 .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
                 .node("Node-1")
                 .autoDeleteOnStop(true)
                 .staticService(false)
-                .templates(new ServiceTemplate("Builder", worlds_typ, "local"))
+                .templates(new ServiceTemplate("Builder", worlds_typ, "local"),new ServiceTemplate("Builder","Plugins","local"))
                 .groups("Builder")
                 .maxHeapMemory(1525)
                 .environment(ServiceEnvironmentType.MINECRAFT_SERVER)
@@ -168,6 +170,25 @@ public class joinlistener implements Listener {
             serviceId = serviceInfoSnapshot.getServiceId().getTaskServiceId();
         }
     }
+
+    ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+
+    @EventHandler
+    public void joinListener(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        player.getInventory().clear();
+        player.getInventory().setItem(0, GuiOpener);
+
+        }
+
+
+
+
+
+
+
+
+
 
 }
 
