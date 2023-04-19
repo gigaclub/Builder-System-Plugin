@@ -62,7 +62,7 @@ public class joinlistener implements Listener {
                             int countdown = 10;
 
                             public void run() {
-                                player2.sendMessage(t.t("BuilderSystem.countdown_begin", playerUUID));
+                                player2.sendMessage(t.t("BuilderSystem.countdown_begin", player));
                                 if (countdown > 0) {
                                     player2.sendMessage(String.valueOf(countdown));
                                 } else {
@@ -133,6 +133,7 @@ public class joinlistener implements Listener {
 
 
     private void startServer(JSONArray teamWorlds, int i, BuilderSystem builderSystem, String playerUUID, String team_name, Translation t, Player player) {
+        
         JSONObject world_data = teamWorlds.getJSONObject(i);
         int world_id = 0;
         try {
@@ -150,8 +151,8 @@ public class joinlistener implements Listener {
 
         String worlds_typ = world.getString("world_type");
         //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-        player.sendMessage(t.t("bsc.Command.CreateServer", playerUUID));
-        player.sendMessage(t.t("bsc.Command.Teleport", playerUUID));
+        player.sendMessage(t.t("bsc.Command.CreateServer", player));
+        player.sendMessage(t.t("bsc.Command.Teleport", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
                 .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
                 .node("Node-1")
@@ -170,15 +171,22 @@ public class joinlistener implements Listener {
         }
     }
 
+    ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
+
     @EventHandler
     public void joinListener(PlayerJoinEvent event) {
-        ItemStack GuiOpener = new ItemBuilder(Material.NETHER_STAR).setDisplayName((ChatColor.BLUE + "BuilderGui")).setLore((ChatColor.AQUA + "Open The BuilderGui")).setGui(true).addIdentifier("Gui_Opener").build();
         Player player = event.getPlayer();
         player.getInventory().clear();
         player.getInventory().setItem(0, GuiOpener);
 
+        }
 
-    }
+
+
+
+
+
+
 
 
 

@@ -39,7 +39,7 @@ public class CreateServer {
 
         String worlds_typ = world.getString("world_type");
         //  world_name, task_name, task_id, worlds_typ, word_id, team_name
-        player.sendMessage(t.t("bsc.Command.CreateServer", playerUUID));
+        player.sendMessage(t.t("bsc.Command.CreateServer", player));
         ServiceInfoSnapshot serviceInfoSnapshot = ServiceConfiguration.builder()
                 .task(team_name + "_" + task_name + "_" + task_id + "_" + world_id)
                 .node("Node-1")

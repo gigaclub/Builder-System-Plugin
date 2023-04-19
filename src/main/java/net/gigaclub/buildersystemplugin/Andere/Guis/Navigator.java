@@ -10,11 +10,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -49,7 +51,7 @@ public class Navigator implements Listener {
         int size = 9 * 3;
         Inventory inventory = Bukkit.createInventory(null, size, (ChatColor.DARK_AQUA + "Builder System Gui"));
         GuiLayoutBuilder guiLayout = new GuiLayoutBuilder();
-        inventory = guiLayout.guiFullBuilder(inventory,size);
+        inventory = guiLayout.guiFullBuilder(inventory, size);
 
 
         ItemStack TeamGui = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Team")).setLore(this.teamGui.teamloreList()).setGui(true).addIdentifier("Team_Opener").build();
@@ -66,7 +68,6 @@ public class Navigator implements Listener {
     public void clickEvent(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack item = event.getCurrentItem();
-
 
         if (item == null) {
             return;
@@ -100,7 +101,6 @@ public class Navigator implements Listener {
                 case "World_Opener" -> this.worldGui.worldGui(player);
 
 
-
                 //Team Gui
                 case "invite_list_Opener" -> this.teamGui.teamInvite(player);
                 case "Team_Create" -> this.teamGui.teamCreatename(player);
@@ -128,6 +128,7 @@ public class Navigator implements Listener {
     public void clickInvCancel(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack item = event.getCurrentItem();
+
         if (item == null) {
             return;
         } else {
@@ -149,6 +150,15 @@ public class Navigator implements Listener {
     @EventHandler
     public void handleGuiOpener(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack item = event.getItem();
+            if (item == null) {
+                return;
+            } else {
+                ItemMeta meta = item.getItemMeta();
+                if (meta == null) {
+                    return;
+                }
+            }
             PersistentDataContainer data = event.getItem().getItemMeta().getPersistentDataContainer();
             if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"))) {
                 String identifie = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
@@ -158,6 +168,29 @@ public class Navigator implements Listener {
             }
         }
     }
+    @EventHandler
+    public void handleItemDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItemDrop().getItemStack();
 
+        if (item == null) {
+            return;
+        } else {
+            ItemMeta meta = item.getItemMeta();
+            if (meta == null) {
+                return;
+            }
+        }
+        PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
+        if (data.has(new NamespacedKey(Main.getPlugin(), "identifie"))) {
+            String identifie = data.get(new NamespacedKey(Main.getPlugin(), "identifie"), PersistentDataType.STRING);
+            if (Objects.equals(identifie, "Gui_Opener")) {
+                event.setCancelled(true);
+
+            }
+        }
+
+
+    }
 
 }

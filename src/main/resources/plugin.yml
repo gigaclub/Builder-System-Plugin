@@ -2,7 +2,7 @@ name: Builder_System_Plugin
 version: @version@
 main: net.gigaclub.buildersystemplugin.Main
 
-api-version: 1.18
+api-version: 1.19
 authors: [ Feier68 ]
 
 description: Builder-System-Plugin

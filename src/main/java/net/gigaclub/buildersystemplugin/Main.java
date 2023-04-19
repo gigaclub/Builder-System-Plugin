@@ -17,10 +17,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.io.File;
 import java.util.Arrays;
@@ -74,7 +73,6 @@ public final class Main extends JavaPlugin implements Listener {
 
     public static void setPlugin(Main plugin) {
         Main.plugin = plugin;
-
     }
 
     public static BuilderSystem getBuilderSystem() {
@@ -194,7 +192,8 @@ public final class Main extends JavaPlugin implements Listener {
                 config.getString("Odoo.Host"),
                 config.getString("Odoo.Database"),
                 config.getString("Odoo.Username"),
-                config.getString("Odoo.Password")
+                config.getString("Odoo.Password"),
+                getPlugin()
         ));
         translation.setCategory("builderSystem");
         setBuilderSystem(new BuilderSystem(

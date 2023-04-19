@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.gigaclub"
-version = "1.18.2.1.0.0"
+version = "1.19.4.1.0.0"
 
 
 apply(plugin = "java")
@@ -76,7 +76,7 @@ repositories {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
         compileOnly("me.clip:placeholderapi:2.11.1")
         compileOnly("org.jetbrains:annotations:23.0.0")
         annotationProcessor("org.jetbrains:annotations:23.0.0")
@@ -86,7 +86,7 @@ repositories {
         implementation("de.dytanic.cloudnet:cloudnet-driver:3.4.3-RELEASE")
 
         implementation("net.gigaclub:buildersystemapi:14.0.1.0.10")
-        implementation("net.gigaclub:translationapi:14.0.1.0.5")
+        implementation("net.gigaclub:translationapi:14.0.1.0.7")
         compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
         implementation("net.wesjd:anvilgui:1.5.3-SNAPSHOT")
 

@@ -45,7 +45,6 @@ public class TaskGui implements Listener {
         this.on = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.GREEN + "Activate")).setLore("").setGui(true).addIdentifier("on").build();
         this.off = new ItemBuilder(api.getItemHead("9386")).setDisplayName((ChatColor.RED + "Deactivate")).setLore("").setGui(true).addIdentifier("off").build();
     }
-
     public ArrayList<String> taskloreList() {
         ArrayList<String> loreList = new ArrayList<>();
         loreList.add(ChatColor.GOLD + "--------------");

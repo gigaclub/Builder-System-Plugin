@@ -35,7 +35,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        String playerUUID = player.getUniqueId().toString();
+
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
         FileConfiguration config = getConfig();
@@ -44,24 +44,28 @@ public class Tasks implements CommandExecutor, TabCompleter {
         if (player instanceof Player) {
 
             if (args.length >= 1) {
-
+                player.sendMessage("1");
                 switch (args[0].toLowerCase()) {
 
                     case "create":
+                        player.sendMessage("2");
                         if (args.length == 1) {
-                            player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                            player.sendMessage(t.t("builder_team.to_less_arguments", player));
                             return false;
                         }
-                        if (player.hasPermission("builderteam.admin")) {
+                       // if (player.hasPermission("builderteam.admin")) {
+                            if (args.length >= 2) {
 
                             if (args.length == 2) {
+                                player.sendMessage("3.5");
                                 // nur name
                                 builderSystem.createTask(args[1], "", config.getInt("Teams.task.Create.x"), config.getInt("Teams.task.Create.x"));
-                                player.sendMessage(t.t("builder_team.task.create.task_name_succses", playerUUID));
+                                player.sendMessage(t.t("builder_team.task.create.task_name_succses", player));
                             } else if (args.length >= 3) {
                                 // name + description
+                                player.sendMessage("4");
                                 builderSystem.createTask(args[1], getDescription(args, 4), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-                                player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", playerUUID));
+                                player.sendMessage(t.t("builder_team.task.create.task_name_desc_succses", player));
                             }
                             Main.getTaskCache().invalidateCache();
                             Main.getTaskCache().invalidateInventoryCache();
@@ -70,7 +74,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
                         break;
                     case "remove":
                         if (args.length == 1) {
-                            player.sendMessage(t.t("builder_team.to_less_arguments", playerUUID));
+                            player.sendMessage(t.t("builder_team.to_less_arguments", player));
                             return false;
                         }
                         if (player.hasPermission("gigaclub_builder_system.remove_task")) {
@@ -79,14 +83,15 @@ public class Tasks implements CommandExecutor, TabCompleter {
 
                                     int i = Integer.parseInt(args[1]);
                                     builderSystem.removeTask(i);
-                                    player.sendMessage(t.t("builder_team.task.remove_succses", playerUUID));
+                                    player.sendMessage(t.t("builder_team.task.remove_succses", player));
                                     Main.getTaskCache().invalidateCache();
                                     Main.getTaskCache().invalidateInventoryCache();
 
-                                } else player.sendMessage(t.t("builder_team.wrong_arguments", playerUUID));
+                                } else player.sendMessage(t.t("builder_team.wrong_arguments", player));
                             }
-                            break;
+
                         }
+                        break;
                     case "list":
                         JSONArray tasks = builderSystem.getAllTasks();
                         for (int i = 0; i < tasks.length(); i++) {
@@ -97,11 +102,11 @@ public class Tasks implements CommandExecutor, TabCompleter {
                             try {
                                 task.getBoolean("description");
                             } catch (Exception e) {
-                                player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.Description", playerUUID)) + " " + ChatColor.WHITE + task.getString("description"));
+                           //     player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.Description", player)) + " " + ChatColor.WHITE + task.getString("description"));
                             }
-                            player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", playerUUID)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
+                          //  player.sendMessage(ChatColor.GRAY + (t.t("builder_team.task.list.build_size", player)) + " " + ChatColor.WHITE + task.getInt("build_width") + " x " + task.getInt("build_length"));
                             JSONArray worlds = task.getJSONArray("world_ids");
-                            player.sendMessage((t.t("builder_team.task.list.projeckt_count", playerUUID)) + " " + worlds.length());
+                            player.sendMessage((t.t("builder_team.task.list.projeckt_count", player)) + " " + worlds.length());
 
                             player.sendMessage(ChatColor.BOLD + ChatColor.DARK_GRAY.toString() + "----------------------------------");
                         }
@@ -118,7 +123,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         Player player = (Player) sender;
-        String playerUUID = player.getUniqueId().toString();
+
         Translation t = Main.getTranslation();
         BuilderSystem builderSystem = Main.getBuilderSystem();
 
@@ -160,22 +165,22 @@ public class Tasks implements CommandExecutor, TabCompleter {
                 case "create":
                     if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
-                        createname.add("<" + t.t("builder_team.task.create.tab_task_name", playerUUID) + ">");
+                        createname.add("<" + t.t("builder_team.task.create.tab_task_name", player) + ">");
                         return createname;
 
                     } else if (args.length == 3) {
                         List<String> createDescription = new ArrayList<>();
-                        createDescription.add("<" + t.t("builder_team.task.create.tab_task_x_size", playerUUID) + ">");
+                        createDescription.add("<" + t.t("builder_team.task.create.tab_task_x_size", player) + ">");
                         return createDescription;
 
                     } else if (args.length == 4) {
                         List<String> createDescription = new ArrayList<>();
-                        createDescription.add("<" + t.t("builder_team.task.create.tab_task_y_size", playerUUID) + ">");
+                        createDescription.add("<" + t.t("builder_team.task.create.tab_task_y_size", player) + ">");
                         return createDescription;
 
                     } else if (args.length == 5) {
                         List<String> createDescription = new ArrayList<>();
-                        createDescription.add("<" + t.t("builder_team.create.tab_description", playerUUID) + ">");
+                        createDescription.add("<" + t.t("builder_team.create.tab_description", player) + ">");
                         return createDescription;
 
                     }
@@ -184,7 +189,7 @@ public class Tasks implements CommandExecutor, TabCompleter {
                 case "remove":
                     if (args.length == 2) {
                         List<String> createname = new ArrayList<>();
-                        createname.add("<" + t.t("builder_team.tab_task_id", playerUUID) + ">");
+                        createname.add("<" + t.t("builder_team.tab_task_id", player) + ">");
                         return createname;
 
 
